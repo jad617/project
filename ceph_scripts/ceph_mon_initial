@@ -77,21 +77,21 @@ osd crush chooseleaf type = 1
 
 " > $ceph_conf_file
 
-ceph-authtool --create-keyring /tmp/ceph.mon.keyring --gen-key -n mon. --cap mon 'allow *'
+ceph-authtool --cluster $cluster_name --create-keyring /tmp/"$cluster_name".mon.keyring --gen-key -n mon. --cap mon 'allow *'
 
-ceph-authtool --create-keyring /etc/ceph/ceph.client.admin.keyring --gen-key -n client.admin --set-uid=0 --cap mon 'allow *' --cap osd 'allow *'
+ceph-authtool --cluster $cluster_name --create-keyring /etc/ceph/"$cluster_name".client.admin.keyring --gen-key -n client.admin --set-uid=0 --cap mon 'allow *' --cap osd 'allow *'
 
-ceph-authtool /tmp/ceph.mon.keyring --import-keyring /etc/ceph/ceph.client.admin.keyring
+ceph-authtool --cluster $cluster_name /tmp/"$cluster_name".mon.keyring --import-keyring /etc/ceph/"$cluster_name".client.admin.keyring
 
-monmaptool --create --generate -c /etc/ceph/"$cluster_name".conf /tmp/monmap
+monmaptool --cluster $cluster_name --create --generate -c /etc/ceph/"$cluster_name".conf /tmp/monmap
 
 mkdir /var/lib/ceph/mon/$cluster_name-$HOSTNAME
 
-ceph-mon --mkfs -i $HOSTNAME --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring
+ceph-mon --cluster $cluster_name --mkfs -i $HOSTNAME --monmap /tmp/monmap --keyring /tmp/"$cluster_name".mon.keyring
 
 touch /var/lib/ceph/mon/$cluster_name-$HOSTNAME/"done"
 
-start ceph-mon id=$HOSTNAME
+start ceph-mon id=$HOSTNAME cluster=$cluster_name
 
 touch /var/lib/ceph/mon/$cluster_name-$HOSTNAME/"upstart"
 
@@ -109,7 +109,7 @@ echo -e "\nVerify that Ceph created the default pools"
 ceph --cluster $cluster_name osd lspools
 
 echo -e "\nVerify that the monitor is running"
-ceph -s --cluster $cluster_name
+ceph --cluster $cluster_name -s
 
 ###---We send the folder via SCP#####
 rm ceph_0.94.5-1trusty_amd64.deb*
