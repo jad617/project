@@ -106,15 +106,16 @@ sudo sed -i "$sed_line a $upstart" /etc/rc.local
 read -p "We are now going to proceed with the verification. [Press any key]: " fake
 
 echo -e "\nVerify that Ceph created the default pools"
-ceph osd lspools
+ceph --cluster $cluster_name osd lspools
 
 echo -e "\nVerify that the monitor is running"
-ceph -s
+ceph -s --cluster $cluster_name
 
 ###---We send the folder via SCP#####
+rm ceph_0.94.5-1trusty_amd64.deb*
 
-export cluster_name=$cluster_name
-sudo bash sources/ceph_scp
+export cluster_name
+bash sources/ceph_scp
 
 
 
