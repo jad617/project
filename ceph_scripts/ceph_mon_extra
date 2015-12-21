@@ -12,9 +12,7 @@ source sources/ceph_variables
 ###########################----------------------------------ARRAY-----------------------------------------##############################
 
 #We create the inital array that holds the Hostnames and IPs
-f_array_create $num_srv
 
-f_add_host_ip
 
 
 #################################################################################################################################
@@ -35,10 +33,7 @@ sudo ceph-mon -i $HOSTNAME --mkfs --monmap /tmp/monmap --keyring /tmp/ceph.mon.k
 ceph-mon -i $HOSTNAME
 
 
-####---------------------------------------------------Configuration for the /etc/ceph/ceph.conf--------
-####Ubuntu Upstart for the Monitors
 
-f_rc_local
 
 ####----------------------------------------------------Verification----------------------------###
 

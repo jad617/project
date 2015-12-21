@@ -4,6 +4,7 @@
 project_name="project"
 project_path="../../$project_name/"
 folder_path="/etc/ceph/"$cluster_name".conf"
+keyring_path="/etc/ceph/"$cluster_name".client.admin.keyring"
 
 echo "$project_name"
 echo "$cluster_name"
@@ -41,23 +42,26 @@ do
 
         	if [ "$reponse" = "1" ]
        		then
-			echo "The cluster configuration file will be saved to "$folder_path"."
+			read -p "The cluster configuration file will be saved to "$folder_path". Press any key to continue" fake
 			sudo scp -P $node_port $folder_path $node_user@$node_ip:/tmp
                 	ssh -p $node_port $node_user@$node_ip "sudo mv /tmp/"$cluster_name".conf $folder_path"
 			loop=false
         	elif [ "$reponse" = "2" ]
        		then
-			echo "The folder $project_name will be sent to /root"
+			read -p "The folder $project_name will be sent to /root" fake
                 	sudo scp -r -P $node_port $project_path $node_user@$node_ip:/tmp
 			ssh -p $node_port $node_user@$node_ip "sudo mv /tmp/$project_name /root"
                 	loop=false
         	elif [ "$reponse" = "3" ]
         	then
-			echo -e "The cluster configuration file will be saved to "$folder_path".\n"
-			echo "The folder $project_name will be sent to /root"
+			read -p "The cluster configuration file will be saved to "$folder_path". Press any key to continue" fake
+			read -p "The folder $project_name will be sent to /root" fake
+			read -p "We will also send the "$cluster_name".client.admin.keyring to /etc/ceph. Press any key to continue" fake
 			sudo scp -P $node_port $folder_path $node_user@$node_ip:/tmp
 			sudo scp -r -P $node_port $project_path $node_user@$node_ip:/tmp
+			sudo scp -p $node_port $keyring_path $node_user@$node_ip:/tmp
 			ssh -p $node_port $node_user@$node_ip "sudo mv /tmp/"$cluster_name".conf $folder_path"
+			ssh -p $node_port $node_user@$node_ip "sudo mv /tmp/"$cluster_name".client.admin.keyring $keyring_path"
 			ssh -p $node_port $node_user@$node_ip "sudo mv /tmp/$project_name /root"
                 	loop=false
         	else
