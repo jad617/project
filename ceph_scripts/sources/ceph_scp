@@ -47,14 +47,14 @@ do
 			loop=false
         	elif [ "$reponse" = "2" ]
        		then
-			read -p "Enter the destination path for the project folder: " folder_dest
+			echo "The folder $project_name will be sent to /root"
                 	sudo scp -r -P $node_port $project_path $node_user@$node_ip:/tmp
 			ssh -p $node_port $node_user@$node_ip "sudo mv /tmp/$project_name /root"
                 	loop=false
         	elif [ "$reponse" = "3" ]
         	then
-			echo "The cluster configuration file will be saved to "$folder_path".\n"
-			read -p "Enter the destination path for the project folder: " folder_dest
+			echo -e "The cluster configuration file will be saved to "$folder_path".\n"
+			echo "The folder $project_name will be sent to /root"
 			sudo scp -P $node_port $folder_path $node_user@$node_ip:/tmp
 			sudo scp -r -P $node_port $project_path $node_user@$node_ip:/tmp
 			ssh -p $node_port $node_user@$node_ip "sudo mv /tmp/"$cluster_name".conf $folder_path"
