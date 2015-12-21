@@ -22,15 +22,31 @@ fi
 
 ###########################----------------------------------ARRAY-----------------------------------------##############################
 
+config_answer=true
 
-#We take the name of the cluster
-read -p "What is the name of your cluster?: [Default=ceph] " cluster_name
-if [ -z $cluster_name ]
-then
-        cluster_name="ceph"
-fi
-read -p "What is the IP/CIDR of your Public Network? [ex: 167.114.145.0/24]: " public_network
-read -p "What is the IP/CIDR of your Cluster Network? [ex: 10.0.1.0/24]: " cluster_network
+while [ "$config_answer" = true ]
+do
+	#We take the name of the cluster
+	read -p "What is the name of your cluster?: [Default=ceph] " cluster_name
+	if [ -z $cluster_name ]
+	then
+        	cluster_name="ceph"
+	fi
+	read -p "What is the IP/CIDR of your Public Network? [ex: 167.114.145.0/24]: " public_network
+	read -p "What is the IP/CIDR of your Cluster Network? [ex: 10.0.1.0/24]: " cluster_network
+
+	echo -e "\ncluster_name=$cluster_name\npublic_network=$public_network\ncluster_network=$cluster_network\n"
+
+	read -p "Are these configs right? [y/n] : " config_question
+	if [ "$config_question" = "y" ]
+	then
+		config_answer=false
+	else
+		config_answer=true
+		
+	fi
+done
+
 
 ceph_conf_file=/etc/ceph/"$cluster_name".conf
 ip_addr="$(ifconfig eth1 | grep 'inet addr' | cut -d ':' -f 2 | cut -d ' ' -f 1)"
@@ -56,7 +72,8 @@ echo $ceph_fsid
 #We create the /etc/ceph/$cluster.conf
 echo -e "[global]
 fsid = $ceph_fsid
-public network = $public_network
+#public network = $public_network
+cluster network = $cluster_network
 auth cluster required = cephx
 auth service required = cephx
 auth client required = cephx
