@@ -2,15 +2,11 @@
 
 cd "$(dirname "$0")"
 
-if [ -f export_file ]
-then
-	source export_file
-else
-	source ../export_file
-fi
+
+source ../export_file
 
 project_name="project"
-project_path="../../$project_name/"
+project_path="../../../$project_name/"
 folder_path="/etc/ceph/"$cluster_name".conf"
 keyring_path="/etc/ceph/"$cluster_name".client.admin.keyring"
 
@@ -23,7 +19,7 @@ then
         question=false
 else
         question=true
-        echo -e "\nWe are now going to use SCP to send the Openstack files to the other nodes\n"
+        echo -e "\nWe are now going to use SCP to send files to the other nodes\n"
 fi
 
 
