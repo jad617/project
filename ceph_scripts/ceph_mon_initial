@@ -1,0 +1,122 @@
+#! /bin/bash
+
+
+###-------------------------------------------------------Initial Monitor Script---------------------------------------------------------------
+
+###---We start the installation script first
+sudo bash sources/ceph_hammer_packages
+
+
+####-----------------------------Monitor Deployment----------------------------
+
+if [ -d /etc/ceph ]
+then
+	echo -e "The ceph directory /etc/ceph is already created, creating the ceph.conf file\n"
+	sudo touch /etc/ceph/ceph.conf
+else
+	echo -e "Creating the directory: /etc/ceph and ceph.conf file\n"
+	sudo mkdir /etc/ceph
+	sudo touch /etc/ceph/ceph.conf
+fi
+
+
+###########################----------------------------------ARRAY-----------------------------------------##############################
+
+
+#We take the name of the cluster
+read -p "What is the name of your cluster?: [Default=ceph] " cluster_name
+if [ -z $cluster_name ]
+then
+        cluster_name="ceph"
+fi
+read -p "What is the IP/CIDR of your Public Network? [ex: 167.114.145.0/24]: " public_network
+read -p "What is the IP/CIDR of your Cluster Network? [ex: 10.0.1.0/24]: " cluster_network
+
+ceph_conf_file=/etc/ceph/"$cluster_name".conf
+ip_addr="$(ifconfig eth1 | grep 'inet addr' | cut -d ':' -f 2 | cut -d ' ' -f 1)"
+
+#sudo sed -i "$count a 'cluster_name=$cluster_name'" ceph_functions
+#count=$((count+1))
+
+
+#We create the inital array that holds the Hostnames and IPs
+
+
+#List the values of the same array separated by a ","
+#IFS=',';monitor_host="${mon_hostname[*]// /|}";IFS=$' \t\n'
+#IFS=',';monitor_ip="${mon_ip[*]// /|}";IFS=$' \t\n'
+
+
+#We create a UUID for our cluster
+ceph_fsid=$(uuidgen)
+echo $ceph_fsid
+
+
+#################################################################################################################################
+#We create the /etc/ceph/$cluster.conf
+echo -e "[global]
+fsid = $ceph_fsid
+public network = $public_network
+auth cluster required = cephx
+auth service required = cephx
+auth client required = cephx
+osd journal size = 1024
+filestore xattr use omap = true
+osd pool default size = 2
+osd pool default min size = 1
+osd pool default pg num = 333
+osd pool default pgp num = 333
+osd crush chooseleaf type = 1
+
+#keyring = /etc/ceph/ceph.client.admin.keyring
+
+[mon.$HOSTNAME]
+    host = $HOSTNAME
+    mon addr = $ip_addr:6789
+    mon data = /var/lib/ceph/mon/$cluster_name-$HOSTNAME
+
+" > $ceph_conf_file
+
+ceph-authtool --create-keyring /tmp/ceph.mon.keyring --gen-key -n mon. --cap mon 'allow *'
+
+ceph-authtool --create-keyring /etc/ceph/ceph.client.admin.keyring --gen-key -n client.admin --set-uid=0 --cap mon 'allow *' --cap osd 'allow *'
+
+ceph-authtool /tmp/ceph.mon.keyring --import-keyring /etc/ceph/ceph.client.admin.keyring
+
+monmaptool --create --generate -c /etc/ceph/"$cluster_name".conf /tmp/monmap
+
+mkdir /var/lib/ceph/mon/$cluster_name-$HOSTNAME
+
+ceph-mon --mkfs -i $HOSTNAME --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring
+
+touch /var/lib/ceph/mon/$cluster_name-$HOSTNAME/"done"
+
+start ceph-mon id=$HOSTNAME
+
+touch /var/lib/ceph/mon/$cluster_name-$HOSTNAME/"upstart"
+
+#RC LOCAL
+sed_line=13
+upstart="sudo start ceph-mon "id=$HOSTNAME" "cluster=$cluster_name""
+sudo sed -i "$sed_line a $upstart" /etc/rc.local
+
+
+####----------------------------------------------------Verification----------------------------###
+
+read -p "We are now going to proceed with the verification. [Press any key]: " fake
+
+echo -e "\nVerify that Ceph created the default pools"
+ceph osd lspools
+
+echo -e "\nVerify that the monitor is running"
+ceph -s
+
+###---We send the folder via SCP#####
+
+sudo bash sources/ceph_scp
+
+
+
+
+
+

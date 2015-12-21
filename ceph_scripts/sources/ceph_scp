@@ -1,0 +1,87 @@
+#!/bin/bash
+
+source ../ceph_mon_initial
+echo "$cluster_name"
+
+project_path="../../project.beta/"
+folder_path="/etc/ceph/"$cluster_name".conf"
+
+echo "$folder_path"
+echo "$cluster_name"
+###SCP transfer to other nodes
+read -p "Would you like to send those configs to another server?: [y/n] " question1
+if [ "$question1" != "y" ]
+then
+        question=false
+else
+        question=true
+        echo -e "\nWe are now going to use SCP to send the Openstack files to the other nodes\n"
+fi
+
+
+
+while [ "$question" = true ]
+do
+        read -p "What Server's IP should we send the config files?: " node_ip
+        read -p "What is the username on the server?: " node_user
+        read -p "What is the port does his SSH listens to?: [Default=22] " node_port
+        if [ -z $node_port ]
+        then
+                node_port=22
+        fi
+	
+	read -p "Give the full path of the destination folder: " folder_dest
+
+	loop=true
+	while [ "$loop" = true ]
+	do
+
+		echo -e "\nSelect the source file/folder that you want to send:\n"
+        	echo -e "1) ceph.conf\n2) project folder\n3) All\n"
+        	read -p "Enter the number: " reponse
+
+        	if [ "$reponse" = "1" ]
+       		then
+			echo "The cluster configuration file will be saved to "$folder_path"."
+			sudo scp -P $node_port $folder_path $node_user@$node_ip:$folder_path
+                	loop=false
+        	elif [ "$reponse" = "2" ]
+       		then
+			read -p "Enter the destination path for the project folder: " folder_dest
+                	sudo scp -r -P $node_port $project_path $node_user@$node_ip:$folder_dest
+                	loop=false
+        	elif [ "$reponse" = "3" ]
+        	then
+			echo "The cluster configuration file will be saved to "$folder_path".\n"
+			read -p "Enter the destination path for the project folder: " folder_dest
+			sudo scp -P $node_port $folder_path $node_user@$node_ip:$folder_path
+			sudo scp -r -P $node_port $project_path $node_user@$node_ip:$folder_dest
+                	loop=false
+        	else
+                	echo -e "\n"
+                	read -p "Invalid input. Press any key to reload menu: " fake
+                	loop=true
+        	fi
+
+	done	
+        
+	if [ "$?" -ne 0 ]
+        then
+                echo -e "\nSCP was not able to send the folder, please try again\n"
+                question=true
+                continue
+        fi
+
+        echo -e "\n\n"
+        read -p "Would you like to send it to another Server?: [y/n] " answer
+        if [ "$answer" != "y" ]
+        then
+                question=false
+        else
+                question=true
+
+        fi
+
+
+done
+

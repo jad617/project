@@ -1,0 +1,133 @@
+#! /bin/bash
+
+
+###To create the initial array containing the Hostnames and IPs
+f_array_create()
+{
+#We start by storing the hostnames of the servers
+mon_hostname=()
+mon_ip=()
+combine1=()
+i=0
+srv=1
+answer=true
+while [ "$answer" = true ]
+do 
+	while [ $i -lt $1 ] 
+	do
+		echo -e "\n"
+        	read -p 'What is the hostname of Server '$srv' ?: ' mon
+        	read -p 'What is the IP of Server '$srv' ?: ' ip
+        	mon_hostname[i]=$mon
+        	mon_ip[i]=$ip
+        	srv=$((srv+1))
+        	i=$((i+1))
+	done
+	
+	echo -e "\nYour Hostnames are:\n${mon_hostname[@]}\nYour IPs are:\n${mon_ip[@]}"
+	read -p "Is this the right configuration?, if NO we will restart: [y/n] : " conf_answer
+	if [ $conf_answer != "y" ]
+	then
+		answer = true
+	else
+		answer = false
+	fi 
+done
+}
+
+###Function to add the '--add'
+f_add_host_ip()
+{
+######We combine the hostname and IP with "--add"
+c=0
+e=()
+while [ $c -lt ${#mon_hostname[@]} ] || [ $c -lt ${#mon_ip[@]} ]
+do
+        add=("--add ${mon_hostname[c]}  ${mon_ip[c]}")
+        e[c]=$add
+        c=$((c+1))
+
+done
+
+}
+
+#**************************************************************************************************************
+####function for upstart
+#f_upstart()
+#{
+#
+#f=0
+#while [ $f -lt ${#mon_hostname[@]} ]
+#do
+#        sudo mkdir -p /var/lib/ceph/mon/$cluster_name-${mon_hostname[f]}
+#        sudo touch /var/lib/ceph/mon/$cluster_name-${mon_hostname[f]}/"done"
+#        sudo touch /var/lib/ceph/mon/$cluster_name-${mon_hostname[f]}/"upstart"
+#        f=$((f+1))
+#done
+#
+#}
+
+
+###Creates the /var/lib/ceph/mon/cluster-node and the "done" + "upstart" files with the appropriate HOSTNAME
+f_default_directory()
+{
+
+sudo mkdir -p /var/lib/ceph/mon/$cluster_name-$HOSTNAME
+sudo touch /var/lib/ceph/mon/$cluster_name-$HOSTNAME/"done"
+sudo touch /var/lib/ceph/mon/$cluster_name-$HOSTNAME/"upstart"
+
+}
+
+#******************************************************************************************************************
+
+###Function to add the Monitor map with the '-i hostname' option
+f_add_mon_map()
+{
+g=0
+mkfs_i=()
+while [ $g -lt ${#mon_hostname[@]} ] 
+do
+        add_i=("-i ${mon_hostname[g]}")
+        mkfs_i[g]=$add_i
+        g=$((g+1))
+
+done
+}
+
+#*************************************************************************************************************************************
+####Ubuntu Upstart for the Monitors
+#This loop will run serveral times depending on the number of Monitor Hostnames and will write those Hostnames in the rc.local file, so that the "mon service" can start at boot
+#f_rc_local()
+#{
+#h=0             #Loop counter
+#line_count=13   #Line Counter
+#while [ $h -lt ${#mon_hostname[@]} ]
+#do 
+#        upstart="sudo start ceph-mon "id=${mon_hostname[h]}" "cluster=$cluster_name""
+#        sudo sed -i "$line_count a $upstart" /etc/rc.local
+#        line_count=$((line_count+1))
+#        h=$((h+1))
+#
+#done
+#}
+
+f_rc_local()
+{
+sed_line=13
+upstart="sudo start ceph-mon "id=$HOSTNAME" "cluster=$cluster_name""
+sudo sed -i "$sed_line a $upstart" /etc/rc.local
+}
+
+
+#************************************************************************************************************************************8
+f_mon_conf()
+{
+j=0
+while [ $j -lt ${#mon_hostname[@]} ]
+do
+	echo -e "[mon.${mon_hostname[j]}]\nhost = ${mon_hostname[j]}\nmon addr = ${mon_ip[j]}:6789\n"
+	j=$((j+1))		
+
+done
+}
+

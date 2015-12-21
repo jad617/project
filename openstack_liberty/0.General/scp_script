@@ -1,0 +1,48 @@
+#!/bin/bash
+
+###SCP transfer to other nodes
+read -p "Would you like to send those configs to another server?: [y/n] " question1
+if [ "$question1" != "y" ]
+then
+        question=false
+else
+        question=true
+        echo -e "\nWe are now going to use SCP to send the Openstack files to the other nodes\n"
+fi
+
+
+
+while [ "$question" = true ]
+do
+        read -p "What Server's IP should we send the config files?: " node_ip
+        read -p "What is the username on the server?: " node_user
+        read -p "What is the port does his SSH listens to?: [Default=22] " node_port
+        if [ -z $node_port ]
+        then
+                node_port=22
+        fi
+
+        read -p "Give the full path of your source folder: " folder_path
+        read -p "Give the full path of the destination folder: " folder_dest
+
+        scp -r -P $node_port $folder_path $node_user@$node_ip:$folder_dest
+        if [ "$?" -ne 0 ]
+        then
+                echo -e "\nSCP was not able to send the folder, please try again\n"
+                question=true
+                continue
+        fi
+
+        echo -e "\n\n"
+        read -p "Would you like to send it to another Server?: [y/n] " answer
+        if [ "$answer" != "y" ]
+        then
+                question=false
+        else
+                question=true
+
+        fi
+
+
+done
+

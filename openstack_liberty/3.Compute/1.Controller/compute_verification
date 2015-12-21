@@ -1,0 +1,18 @@
+#!/bin/bash
+
+source /root/admin-openrc.sh
+
+echo -e "\n------------------Verification Process--------------\n"
+echo -e "\nList service components to verify successful launch and registration of each process:\n"
+
+nova service-list
+
+echo -e "\nList API endpoints in the Identity service to verify connectivity with the Identity service:\n"
+
+nova endpoints
+
+echo -e "\nList images in the Image service catalog to verify connectivity with the Image service:\n"
+
+nova image-list
+
+echo -e "\n--------------Verification Process done--------------------\n"

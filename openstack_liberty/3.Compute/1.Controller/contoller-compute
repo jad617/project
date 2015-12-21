@@ -1,0 +1,99 @@
+#! /bin/bash
+
+#We source the passwords
+source ../../0.General/pass_file
+env | grep pass
+
+###########################Compute Database Configuration--------------------
+
+novaDB_pass="$(openssl rand -hex 10)"
+
+###We add the password to the ../0.General/pass_file
+echo -e "#NOVA_DBPASS:\nexport novaDB_pass=${novaDB_pass} \n" >> ../../0.General/pass_file
+echo -e "#Unset NOVA_DBPASS:\nunset novaDB_pass=${novaDB_pass} \n" >> ../../0.General/unset_file
+
+Q1="CREATE DATABASE nova;"
+Q2="GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'localhost' \
+  IDENTIFIED BY '${novaDB_pass}';"
+Q3="GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'%' \
+  IDENTIFIED BY '${novaDB_pass}';"
+SQL="${Q1}${Q2}${Q3}"
+
+
+echo -e "\n"
+read -s -p "What is the root password for MySQL?: " mysql_pass
+echo -e "\n"
+
+mysql -uroot -p"$mysql_pass" -e "$SQL"
+
+###########------------------Creating Nova Users---------------------##########
+
+source /root/admin-openrc.sh
+
+#We generate the passwords for the users
+nova_user_pass="$(openssl rand -hex 10)"
+echo -e "#OpenStack Nova user pass:\nexport nova_user_pass=${nova_user_pass} \n" >> ../../0.General/pass_file
+echo -e "#Unset OpenStack Nova user pass:\nunset nova_user_pass=${nova_user_pass}\n" >> ../../0.General/unset_file
+
+#Create the nova user:
+openstack user create --password $nova_user_pass nova
+
+#Add the admin role to the nova user:
+openstack role add --project service --user nova admin
+
+#Create the nova service entity:
+openstack service create --name nova \
+  --description "OpenStack Compute" compute
+
+#Create the Compute service API endpoint:
+openstack endpoint create \
+  --publicurl http://controller:8774/v2/%\(tenant_id\)s \
+  --internalurl http://controller:8774/v2/%\(tenant_id\)s \
+  --adminurl http://controller:8774/v2/%\(tenant_id\)s \
+  --region RegionOne \
+  compute
+
+
+###---------------------INSTALL the packages and services--------------
+apt-get install -y nova-api nova-cert nova-conductor nova-consoleauth \
+  nova-novncproxy nova-scheduler python-novaclient
+
+cp sources/nova.conf /etc/nova/nova.conf
+chown nova.nova /etc/nova/nova.conf
+
+sed -i "s#connection = mysql://nova:NOVA_DBPASS@controller/nova#connection = mysql://nova:${novaDB_pass}@controller/nova#g" /etc/nova/nova.conf
+
+sed -i "s/password = NOVA_PASS/password = ${nova_user_pass}/g" /etc/nova/nova.conf
+sed -i "s/rabbit_password = RABBIT_PASS/rabbit_password = ${rabbit_pass}/g" /etc/nova/nova.conf
+
+sed -i "s/my_ip = MY_IP/my_ip = $controller_ip/g" /etc/nova/nova.conf
+sed -i "s/vncserver_listen = MY_IP/vncserver_listen = $controller_ip/g" /etc/nova/nova.conf
+sed -i "s/vncserver_proxyclient_address = MY_IP/vncserver_proxyclient_address = $controller_ip/g" /etc/nova/nova.conf
+
+su -s /bin/sh -c "nova-manage db sync" nova
+
+service nova-api restart
+service nova-cert restart
+service nova-consoleauth restart
+service nova-scheduler restart
+service nova-conductor restart
+service nova-novncproxy restart
+
+
+rm -f /var/lib/nova/nova.sqlite
+
+echo -e "\nNova installation is completed on the Controller\n"
+
+bash ../../0.General/scp_script
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,22 @@
+#! /bin/bash
+
+apt-get install mariadb-server python-pymysql
+
+cp sources/mysqld_openstack.cnf /etc/mysql/conf.d/mysqld_openstack.cnf
+chown root.root /etc/mysql/conf.d/mysqld_openstack.cnf
+
+echo -e "\n"
+read -p "What is the IP of the Controller?: " controller_ip
+echo -e "\n"
+
+echo -e "#CONTROLLER_IP:\nexport controller_ip=${controller_ip} \n" >> ../../0.General/pass_file
+
+sed -i "s/BIND_ADDRESS/$controller_ip/g" /etc/mysql/conf.d/mysqld_openstack.cnf
+
+service mysql restart
+
+
+mysql_secure_installation
+
+echo -e "\nMaria DB Installed\n"
+

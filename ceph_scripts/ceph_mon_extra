@@ -1,0 +1,56 @@
+#! /bin/bash
+
+###---We start the installation script first
+sudo bash sources/ceph_infernalis_packages
+
+sudo mv /tmp/ceph.conf /etc/ceph/ceph.conf
+sudo mv /tmp/ceph.client.admin.keyring /etc/ceph/ceph.client.admin.keyring
+###We source the functions from the ceph_function file
+source sources/ceph_functions
+source sources/ceph_variables
+
+###########################----------------------------------ARRAY-----------------------------------------##############################
+
+#We create the inital array that holds the Hostnames and IPs
+f_array_create $num_srv
+
+f_add_host_ip
+
+
+#################################################################################################################################
+
+#Function that creates the /var/lib/ceph/mon/cluster-node folder with also the upstart file
+#f_upstart
+f_default_directory
+
+ceph auth get mon. -o /tmp/ceph.mon.keyring
+
+ceph mon getmap -o /tmp/monmap
+
+##This function will allow us to add several '-i node' options
+f_add_mon_map
+sudo ceph-mon -i $HOSTNAME --mkfs --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring
+
+
+ceph-mon -i $HOSTNAME
+
+
+####---------------------------------------------------Configuration for the /etc/ceph/ceph.conf--------
+####Ubuntu Upstart for the Monitors
+
+f_rc_local
+
+####----------------------------------------------------Verification----------------------------###
+
+read -p "We are now going to proceed with the verification. [Press any key]: " fake
+
+echo -e "Verify that Ceph created the default pools"
+ceph osd lspools
+
+echo -e "\nVerify that the monitor is running"
+ceph -s
+
+
+
+
+

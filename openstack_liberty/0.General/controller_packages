@@ -1,0 +1,24 @@
+#! /bin/bash
+
+apt-get update
+apt-get install chrony -y
+
+sed -i "s/server/#server/g" /etc/chrony/chrony.conf
+echo "server 0.ca.pool.ntp.org iburst
+server 1.ca.pool.ntp.org
+server 2.ca.pool.ntp.org
+server 3.ca.pool.ntp.org" >> /etc/chrony/chrony.conf
+
+service chrony restart
+
+chronyc sources
+
+read -p "Verification for Chrony, press any key to continue:" fake1
+
+apt-get install software-properties-common
+add-apt-repository cloud-archive:liberty
+apt-get update && apt-get dist-upgrade
+apt-get install python-openstackclient
+
+reboot
+
