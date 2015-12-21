@@ -1,6 +1,5 @@
 #!/bin/bash
 
-source ../ceph_mon_initial
 echo "$cluster_name"
 
 project_path="../../project.beta/"
@@ -30,7 +29,7 @@ do
                 node_port=22
         fi
 	
-	read -p "Give the full path of the destination folder: " folder_dest
+	#read -p "Give the full path of the destination folder: " folder_dest
 
 	loop=true
 	while [ "$loop" = true ]
@@ -43,19 +42,19 @@ do
         	if [ "$reponse" = "1" ]
        		then
 			echo "The cluster configuration file will be saved to "$folder_path"."
-			sudo scp -P $node_port $folder_path $node_user@$node_ip:$folder_path
+			sudo scp -P $node_port $folder_path $node_user@$node_ip:/tmp
                 	loop=false
         	elif [ "$reponse" = "2" ]
        		then
 			read -p "Enter the destination path for the project folder: " folder_dest
-                	sudo scp -r -P $node_port $project_path $node_user@$node_ip:$folder_dest
+                	sudo scp -r -P $node_port $project_path $node_user@$node_ip:/tmp
                 	loop=false
         	elif [ "$reponse" = "3" ]
         	then
 			echo "The cluster configuration file will be saved to "$folder_path".\n"
 			read -p "Enter the destination path for the project folder: " folder_dest
-			sudo scp -P $node_port $folder_path $node_user@$node_ip:$folder_path
-			sudo scp -r -P $node_port $project_path $node_user@$node_ip:$folder_dest
+			sudo scp -P $node_port $folder_path $node_user@$node_ip:/tmp
+			sudo scp -r -P $node_port $project_path $node_user@$node_ip:/tmp
                 	loop=false
         	else
                 	echo -e "\n"

@@ -113,6 +113,7 @@ ceph -s
 
 ###---We send the folder via SCP#####
 
+export cluster_name=$cluster_name
 sudo bash sources/ceph_scp
 
 
