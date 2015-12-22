@@ -85,7 +85,8 @@ sed_line=13
 upstart="ceph-mon -i $HOSTNAME --cluster=$cluster_name"
 sudo sed -i "$sed_line a $upstart" /etc/rc.local
 
-
+touch /var/lib/ceph/mon/$cluster_name-$HOSTNAME/"done"
+touch /var/lib/ceph/mon/$cluster_name-$HOSTNAME/"upstart"
 
 
 ####----------------------------------------------------Verification----------------------------###
