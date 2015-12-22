@@ -15,7 +15,7 @@ ip_addr="$(ifconfig eth1 | grep 'inet addr' | cut -d ':' -f 2 | cut -d ' ' -f 1)
 
 
 #We add the [mon.$HOSTNAME] section in the conf file
-echo -e "\n[mon.$HOSTNAME]
+echo "[mon.$HOSTNAME]
 host = $HOSTNAME
 mon addr = $ip_addr:6789
 mon data = /var/lib/ceph/mon/$cluster_name-$HOSTNAME
@@ -76,10 +76,10 @@ ceph auth --cluster $cluster_name get mon. -o /tmp/ceph.mon.keyring
 
 ceph mon --cluster $cluster_name getmap -o /tmp/monmap
 
-sudo ceph-mon --cluster=$cluster_name -i $HOSTNAME --mkfs --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring
+sudo ceph-mon --cluster $cluster_name -i $HOSTNAME --mkfs --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring
 
 #Start the "mon" service
-ceph-mon -i $HOSTNAME --cluster=$cluster_name
+ceph-mon -i $HOSTNAME --cluster $cluster_name
 
 #Add the server to the Monitor Map
 ceph mon add $HOSTNAME $ip_addr:6789
@@ -87,7 +87,7 @@ ceph mon add $HOSTNAME $ip_addr:6789
 #RC LOCAL
 sed_line=13
 #upstart="sudo start ceph-mon "id=$HOSTNAME" "cluster=$cluster_name""
-upstart="ceph-mon -i $HOSTNAME --cluster=$cluster_name"
+upstart="ceph-mon -i $HOSTNAME --cluster $cluster_name"
 sudo sed -i "$sed_line a $upstart" /etc/rc.local
 
 touch /var/lib/ceph/mon/$cluster_name-$HOSTNAME/"done"
