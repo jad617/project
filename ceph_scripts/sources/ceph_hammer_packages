@@ -3,7 +3,7 @@
 
 #ADD KEYS
 
-wget -q -O- 'https://download.ceph.com/keys/release.asc' | sudo apt-key add -
+#wget -q -O- 'https://download.ceph.com/keys/release.asc' | sudo apt-key add -
 apt-add-repository 'deb http://download.ceph.com/debian-hammer/ trusty main'
 
 #DOWNLOAD PACKAGES
