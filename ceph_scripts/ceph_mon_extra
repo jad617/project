@@ -16,6 +16,45 @@ mon data = /var/lib/ceph/mon/$cluster_name-$HOSTNAME
 
 ###create scp to send the .conf file to other servers ***********************************************
 
+conf_file="/etc/ceph/"$cluster_name".conf"
+mon_name=( $(grep "mon data" ceph.conf | cut -d"-" -f2) )
+
+a=0
+while [ $a -lt ${#mon_name[@]} ] 
+do
+#while the Increment is lower than the number of servers to send the conf file to, proceed
+        if [ ${mon_name[a]} = $HOSTNAME ]
+        then
+                echo -e "\nWe cannot send this file to the '$HOSTNAME' server, since it already has it up to date\n"
+                (( a++ ))
+                continue
+	#We first test that the result is not the server that we already are on, since we do not need to send the file to it
+	#If result shows that it is the server that we already are on, it will skip its turn (with the continue command) and increment for the next value
+        else
+                if [[ "${mon_name[a]}" == compute* ]]    #the [[ ]] are needed for the regex wildcard "*"
+                then
+                        user_name="compute"
+                        echo -e "\nThe username for the server '${mon_name[a]}' is $user_name\n"
+                        scp $conf_file $user_name@${mon_name[a]}:/tmp
+                        ssh -t $user_name@${mon_name[a]} "sudo mv /tmp/"$cluster_name".conf $conf_file | sudo chown root.root $conf_file"
+		#if the HOSTNAME is any variant of compute* --> compute1, compute2, compute3, etc. We send the file to them
+                elif [ "${mon_name[a]}" = controller ]
+                then
+                        user_name="controller"
+                        echo -e "\nThe username for the server '${mon_name[a]}' is $user_name\n"
+                        scp $conf_file $user_name@${mon_name[a]}:/tmp
+                        ssh -t $user_name@${mon_name[a]} "sudo mv /tmp/"$cluster_name".conf $conf_file | sudo chown root.root $conf_file"
+		#idem but for the controller
+                else
+                        echo -e "\nWe have not find any server matching the description to send the $conf_file"
+			echo -e "This server : '${mon_name[a]}' is not known to us\n"
+		#Just in case there is a HOSTNAME that we were not aware of in the conf file
+                fi
+        fi
+
+        (( a++ ))
+done
+
 
 
 #################################################################################################################################
