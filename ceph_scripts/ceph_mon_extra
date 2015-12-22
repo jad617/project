@@ -40,21 +40,24 @@ do
                         user_name="compute"
                         echo -e "\nThe username for the server '${mon_name[a]}' is $user_name\n"
                         scp $conf_file $user_name@${mon_name[a]}:/tmp
-                        ssh -t $user_name@${mon_name[a]} "sudo mv /tmp/"$cluster_name".conf $conf_file | sudo chown root.root $conf_file"
+                        ssh -t $user_name@${mon_name[a]} "sudo mv /tmp/"$cluster_name".conf $conf_file"
+			ssh -t $user_name@${mon_name[a]} "sudo chown root.root $conf_file"
 		#if the HOSTNAME is any variant of compute* --> compute1, compute2, compute3, etc. We send the file to them
                 elif [ "${mon_name[a]}" = controller ]
                 then
                         user_name="controller"
                         echo -e "\nThe username for the server '${mon_name[a]}' is $user_name\n"
                         scp $conf_file $user_name@${mon_name[a]}:/tmp
-                        ssh -t $user_name@${mon_name[a]} "sudo mv /tmp/"$cluster_name".conf $conf_file | sudo chown root.root $conf_file"
+			ssh -t $user_name@${mon_name[a]} "sudo mv /tmp/"$cluster_name".conf $conf_file"
+                        ssh -t $user_name@${mon_name[a]} "sudo chown root.root $conf_file"
 		#idem but for the controller
                 else
                         echo -e "\nWe have not find any server matching our server list to send the $conf_file to"
 			echo -e "This server : '${mon_name[a]}' is not known to us\n"
 			read -p "Please enter the username: " user_name
 			scp $conf_file $user_name@${mon_name[a]}:/tmp
-                        ssh -t $user_name@${mon_name[a]} "sudo mv /tmp/"$cluster_name".conf $conf_file | sudo chown root.root $conf_file"
+			ssh -t $user_name@${mon_name[a]} "sudo mv /tmp/"$cluster_name".conf $conf_file"
+                        ssh -t $user_name@${mon_name[a]} "sudo chown root.root $conf_file"                        
 		#Just in case there is a HOSTNAME that we were not aware of in the conf file
                 fi
         fi
