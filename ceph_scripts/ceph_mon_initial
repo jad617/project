@@ -94,6 +94,8 @@ osd crush chooseleaf type = 1
 
 " > $ceph_conf_file
 
+echo "cluster_name=$cluster_name" > sources/export_file
+
 ceph-authtool --cluster $cluster_name --create-keyring /tmp/"$cluster_name".mon.keyring --gen-key -n mon. --cap mon 'allow *'
 
 ceph-authtool --cluster $cluster_name --create-keyring /etc/ceph/"$cluster_name".client.admin.keyring --gen-key -n client.admin --set-uid=0 --cap mon 'allow *' --cap osd 'allow *'
@@ -114,7 +116,8 @@ touch /var/lib/ceph/mon/$cluster_name-$HOSTNAME/"upstart"
 
 #RC LOCAL
 sed_line=13
-upstart="sudo start ceph-mon "id=$HOSTNAME" "cluster=$cluster_name""
+#upstart="sudo start ceph-mon "id=$HOSTNAME" "cluster=$cluster_name""
+upstart="ceph-mon -i $HOSTNAME --cluster=$cluster_name"
 sudo sed -i "$sed_line a $upstart" /etc/rc.local
 
 

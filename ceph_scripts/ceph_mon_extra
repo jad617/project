@@ -1,41 +1,51 @@
 #! /bin/bash
 
+source sources/export_file
 ###---We start the installation script first
-sudo bash sources/ceph_infernalis_packages
-
-sudo mv /tmp/ceph.conf /etc/ceph/ceph.conf
-sudo mv /tmp/ceph.client.admin.keyring /etc/ceph/ceph.client.admin.keyring
-###We source the functions from the ceph_function file
-source sources/ceph_functions
-source sources/ceph_variables
+bash sources/ceph_hammer_packages
 
 ###########################----------------------------------ARRAY-----------------------------------------##############################
 
-#We create the inital array that holds the Hostnames and IPs
+ip_addr="$(ifconfig eth1 | grep 'inet addr' | cut -d ':' -f 2 | cut -d ' ' -f 1)"
+
+echo -e"\n[mon.$HOSTNAME]
+host = $HOSTNAME
+mon addr = $ip_addr:6789
+mon data = /var/lib/ceph/mon/$cluster_name-$HOSTNAME
+" >> /etc/"$cluster_name".conf
+
+###create scp to send the .conf file to other servers ***********************************************
 
 
 
 #################################################################################################################################
 
-#Function that creates the /var/lib/ceph/mon/cluster-node folder with also the upstart file
-#f_upstart
-f_default_directory
+#Create the /var/lib/ceph/mon/cluster-node folder with also the upstart file
+mkdir /var/lib/ceph/mon/$cluster_name-$HOSTNAME
 
-ceph auth get mon. -o /tmp/ceph.mon.keyring
+ceph auth --cluster $cluster_name get mon. -o /tmp/ceph.mon.keyring
 
-ceph mon getmap -o /tmp/monmap
+ceph mon --cluster $cluster_name getmap -o /tmp/monmap
 
 ##This function will allow us to add several '-i node' options
-f_add_mon_map
-sudo ceph-mon -i $HOSTNAME --mkfs --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring
+sudo ceph-mon --cluster $cluster_name -i $HOSTNAME --mkfs --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring
 
 
-ceph-mon -i $HOSTNAME
+ceph-mon -i $HOSTNAME --cluster=$cluster_name
+
+ceph mon add $HOSTNAME $ip_addr:6789
+
+#RC LOCAL
+sed_line=13
+#upstart="sudo start ceph-mon "id=$HOSTNAME" "cluster=$cluster_name""
+upstart="ceph-mon -i $HOSTNAME --cluster=$cluster_name"
+sudo sed -i "$sed_line a $upstart" /etc/rc.local
 
 
 
 
 ####----------------------------------------------------Verification----------------------------###
+
 
 read -p "We are now going to proceed with the verification. [Press any key]: " fake
 
@@ -45,7 +55,8 @@ ceph osd lspools
 echo -e "\nVerify that the monitor is running"
 ceph -s
 
-
+#We run the SCP script
+bash sources/ceph_scp
 
 
 
