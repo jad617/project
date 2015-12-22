@@ -10,15 +10,15 @@ sudo bash sources/ceph_hammer_packages
 
 ####-----------------------------Monitor Deployment----------------------------
 
-if [ -d /etc/ceph ]
-then
-	echo -e "The ceph directory /etc/ceph is already created, creating the ceph.conf file\n"
-	sudo touch /etc/ceph/ceph.conf
-else
-	echo -e "Creating the directory: /etc/ceph and ceph.conf file\n"
-	sudo mkdir /etc/ceph
-	sudo touch /etc/ceph/ceph.conf
-fi
+#if [ -d /etc/ceph ]
+#then
+#	echo -e "The ceph directory /etc/ceph is already created, creating the ceph.conf file\n"
+#	sudo touch /etc/ceph/ceph.conf
+#else
+#	echo -e "Creating the directory: /etc/ceph and ceph.conf file\n"
+#	sudo mkdir /etc/ceph
+#	sudo touch /etc/ceph/ceph.conf
+#fi
 
 
 ###########################----------------------------------ARRAY-----------------------------------------##############################
