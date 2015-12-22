@@ -1,5 +1,6 @@
 #! /bin/bash
 
+cd "$(dirname "$0")"
 
 ###-------------------------------------------------------Initial Monitor Script---------------------------------------------------------------
 
@@ -134,7 +135,7 @@ ceph --cluster $cluster_name -s
 rm ceph_0.94.5-1trusty_amd64.deb*
 
 
-echo "cluster_name=$cluster_name" > sources/export_file
+echo "cluster_name=$cluster_name" > export_file
 
 bash sources/ceph_scp
 

@@ -1,5 +1,7 @@
 #! /bin/bash
 
+cd "$(dirname "$0")"
+
 #We source the export file to include the $cluster_name varialbe in our script
 source sources/export_file
 ###---We start the installation script first
