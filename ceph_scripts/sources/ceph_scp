@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source export_file
 
 project_name="project"
 project_path="../../$project_name/"
@@ -44,7 +45,8 @@ do
        		then
 			read -p "The cluster configuration file will be saved to "$folder_path". Press any key to continue" fake
 			sudo scp -P $node_port $folder_path $node_user@$node_ip:/tmp
-                	ssh -t -p $node_port $node_user@$node_ip "sudo mv /tmp/"$cluster_name".conf $folder_path"
+                	ssh -t -p $node_port $node_user@$node_ip "sudo mkdir /etc/ceph"
+			ssh -t -p $node_port $node_user@$node_ip "sudo mv /tmp/"$cluster_name".conf $folder_path"
 			loop=false
         	elif [ "$reponse" = "2" ]
        		then
@@ -60,6 +62,7 @@ do
 			sudo scp -P $node_port $folder_path $node_user@$node_ip:/tmp
 			sudo scp -r -P $node_port $project_path $node_user@$node_ip:/tmp
 			sudo scp -p $node_port $keyring_path $node_user@$node_ip:/tmp
+			ssh -t -p $node_port $node_user@$node_ip "sudo mkdir /etc/ceph"
 			ssh -t -p $node_port $node_user@$node_ip "sudo mv /tmp/"$cluster_name".conf $folder_path"
 			ssh -t -p $node_port $node_user@$node_ip "sudo mv /tmp/"$cluster_name".client.admin.keyring $keyring_path"
 			ssh -t -p $node_port $node_user@$node_ip "sudo mv /tmp/$project_name /root"

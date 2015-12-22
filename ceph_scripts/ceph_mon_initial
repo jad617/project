@@ -94,7 +94,6 @@ osd crush chooseleaf type = 1
 
 " > $ceph_conf_file
 
-echo "cluster_name=$cluster_name" > sources/export_file
 
 ceph-authtool --cluster $cluster_name --create-keyring /tmp/"$cluster_name".mon.keyring --gen-key -n mon. --cap mon 'allow *'
 
@@ -134,7 +133,9 @@ ceph --cluster $cluster_name -s
 ###---We send the folder via SCP#####
 rm ceph_0.94.5-1trusty_amd64.deb*
 
-export cluster_name
+
+echo "cluster_name=$cluster_name" > sources/export_file
+
 bash sources/ceph_scp
 
 
