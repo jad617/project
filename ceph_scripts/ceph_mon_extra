@@ -1,23 +1,27 @@
 #! /bin/bash
 
+#We source the export file to include the $cluster_name varialbe in our script
 source sources/export_file
 ###---We start the installation script first
 bash sources/ceph_hammer_packages
 
-###########################----------------------------------ARRAY-----------------------------------------##############################
+#WE define our Variables
+conf_file="/etc/ceph/"$cluster_name".conf"
 
+#We find the IP adress on the server that we are working on
 ip_addr="$(ifconfig eth1 | grep 'inet addr' | cut -d ':' -f 2 | cut -d ' ' -f 1)"
 
+
+#We add the [mon.$HOSTNAME] section in the conf file
 echo -e"\n[mon.$HOSTNAME]
 host = $HOSTNAME
 mon addr = $ip_addr:6789
 mon data = /var/lib/ceph/mon/$cluster_name-$HOSTNAME
-" >> /etc/"$cluster_name".conf
+" >> $conf_file
 
-###create scp to send the .conf file to other servers ***********************************************
+###*******************************************create scp to send the .conf file to other servers ***********************************************
 
-conf_file="/etc/ceph/"$cluster_name".conf"
-mon_name=( $(grep "mon data" ceph.conf | cut -d"-" -f2) )
+mon_name=( $(grep "mon data" $conf_file | cut -d"-" -f2) )
 
 a=0
 while [ $a -lt ${#mon_name[@]} ] 
@@ -46,8 +50,11 @@ do
                         ssh -t $user_name@${mon_name[a]} "sudo mv /tmp/"$cluster_name".conf $conf_file | sudo chown root.root $conf_file"
 		#idem but for the controller
                 else
-                        echo -e "\nWe have not find any server matching the description to send the $conf_file"
+                        echo -e "\nWe have not find any server matching our server list to send the $conf_file to"
 			echo -e "This server : '${mon_name[a]}' is not known to us\n"
+			read -p "Please enter the username: " user_name
+			scp $conf_file $user_name@${mon_name[a]}:/tmp
+                        ssh -t $user_name@${mon_name[a]} "sudo mv /tmp/"$cluster_name".conf $conf_file | sudo chown root.root $conf_file"
 		#Just in case there is a HOSTNAME that we were not aware of in the conf file
                 fi
         fi
@@ -55,9 +62,7 @@ do
         (( a++ ))
 done
 
-
-
-#################################################################################################################################
+############################################################-END OF SCP-#####################################################################
 
 #Create the /var/lib/ceph/mon/cluster-node folder with also the upstart file
 mkdir /var/lib/ceph/mon/$cluster_name-$HOSTNAME
@@ -66,12 +71,12 @@ ceph auth --cluster $cluster_name get mon. -o /tmp/ceph.mon.keyring
 
 ceph mon --cluster $cluster_name getmap -o /tmp/monmap
 
-##This function will allow us to add several '-i node' options
 sudo ceph-mon --cluster $cluster_name -i $HOSTNAME --mkfs --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring
 
-
+#Start the "mon" service
 ceph-mon -i $HOSTNAME --cluster=$cluster_name
 
+#Add the server to the Monitor Map
 ceph mon add $HOSTNAME $ip_addr:6789
 
 #RC LOCAL
