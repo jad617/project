@@ -72,9 +72,9 @@ done
 #Create the /var/lib/ceph/mon/cluster-node folder with also the upstart file
 mkdir /var/lib/ceph/mon/$cluster_name-$HOSTNAME
 
-ceph auth --cluster $cluster_name get mon. -o /tmp/ceph.mon.keyring
+ceph --cluster $cluster_name auth get mon. -o /tmp/ceph.mon.keyring
 
-ceph mon --cluster $cluster_name getmap -o /tmp/monmap
+ceph --cluster $cluster_name mon getmap -o /tmp/monmap
 
 sudo ceph-mon --cluster $cluster_name -i $HOSTNAME --mkfs --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring
 
