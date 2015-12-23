@@ -73,8 +73,11 @@ echo $ceph_fsid
 #We create the /etc/ceph/$cluster.conf
 echo -e "[global]
 fsid = $ceph_fsid
-#public network = $public_network
-cluster network = $cluster_network
+###Public Network is the network were your Monitors and Clients(glance,nova,cinder) will communicate with the ceph cluster
+public network = $public_network
+####Cluster Network is only between OSDs to handle OSD heartbeat, object replication and recovery traffic
+##This one is optional
+#cluster network = $cluster_network
 auth cluster required = cephx
 auth service required = cephx
 auth client required = cephx
