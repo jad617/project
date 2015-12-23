@@ -82,7 +82,7 @@ sudo ceph-mon --cluster $cluster_name -i $HOSTNAME --mkfs --monmap /tmp/monmap -
 ceph-mon -i $HOSTNAME --cluster $cluster_name
 
 #Add the server to the Monitor Map
-ceph mon add $HOSTNAME $ip_addr:6789
+ceph --cluster $cluster_name mon add $HOSTNAME $ip_addr:6789
 
 #RC LOCAL
 sed_line=13
@@ -100,10 +100,10 @@ touch /var/lib/ceph/mon/$cluster_name-$HOSTNAME/"upstart"
 read -p "We are now going to proceed with the verification. [Press any key]: " fake
 
 echo -e "Verify that Ceph created the default pools"
-ceph osd lspools
+ceph --cluster $cluster_name osd lspools
 
 echo -e "\nVerify that the monitor is running"
-ceph -s
+ceph --cluster $cluster_name -s
 
 #We run the SCP script
 bash sources/ceph_scp
