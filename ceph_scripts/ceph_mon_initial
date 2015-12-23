@@ -89,9 +89,9 @@ osd crush chooseleaf type = 1
 #keyring = /etc/ceph/ceph.client.admin.keyring
 
 [mon.$HOSTNAME]
-    host = $HOSTNAME
-    mon addr = $ip_addr:6789
-    mon data = /var/lib/ceph/mon/$cluster_name-$HOSTNAME
+host = $HOSTNAME
+mon addr = $ip_addr:6789
+mon data = /var/lib/ceph/mon/$cluster_name-$HOSTNAME
 
 " > $ceph_conf_file
 

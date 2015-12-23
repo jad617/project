@@ -105,6 +105,8 @@ ceph --cluster $cluster_name osd lspools
 echo -e "\nVerify that the monitor is running"
 ceph --cluster $cluster_name -s
 
+rm ceph_0.94.5-1trusty_amd64.deb*
+
 #We run the SCP script
 bash sources/ceph_scp
 
