@@ -1,57 +1,81 @@
 #! /bin/bash
 
+#---------------------------------------------------------------------------OSD Setup Script---------------------------------------------------------
+
+cd "$(dirname "$0")"
+
+#We source the export file to include the $cluster_name varialbe in our script
+source export_file
+
 ############These are only the step by step with there output---script will have to be adapted after
 
-#We find the available disks (/dev/sda is already used for the OS)
+#We find and create a table with the available disks (/dev/sda is already used for the OS)
 
-parted -l | grep "/dev/sd" | cut -d" " -f2 | cut -d: -f1 | grep -v "sda"
+disk_partition=( $(parted -l | grep "/dev/sd" | cut -d" " -f2 | cut -d: -f1 | grep -v "sda") )
 #/dev/sdb
 #/dev/sdc
 
 #Create partitions on the disks
-fdisk /dev/sdb
-fdisk /dev/sdc
+z=0
+while [ $z -lt ${#disk_partition[@]} ] 
+do
+#We do a loop in order to run the fdisk command and all the requiered disks
 
-#1) #Create our first OSD
-osd_uuid=$(uuidgen)
-
-#Create the OSD
-ceph --cluster $cluster_name osd create $osd_uuid
-#This will return the OSD number starting from 0
-#We could put it in a variable for the next steps
-os_num=$(ceph --cluster $cluster_name osd create $osd_uuid)  #for it to have a value of 0
+        echo "We are going to configure ${disk_partition[z]}"
+        fdisk ${disk_partition[z]}
+        (( z++ ))
+done
 
 
-#Create the OSD directory
-mkdir /var/lib/ceph/osd/$cluster_name-$osd_num
+y=0
+while [ $y -lt ${#disk_partition[@]} ]
+do
+#We do a loop until we have created as much OSDs are we have disks
 
-mkfs -t xfs /dev/sdb1
-mount -o inode64 /dev/sdb1 /var/lib/ceph/osd/$cluster_name-$osd_num
+	#1) #Create our first OSD
+	osd_uuid=$(uuidgen)
 
-#Initialize the OSD data directory
-ceph-osd --cluster $cluster_name -i $osd_num --mkfs --mkkey --osd-uuid $osd_uuid
+	#Create the OSD
+	osd_num=$(ceph --cluster $cluster_name osd create $osd_uuid)  #for it to have a value of 0
+	#This will return the OSD number starting from 0 and add the value inside a variable
 
-#Register the OSD Authentification key
-ceph --cluster $cluster_name auth add osd."$osd_num" osd 'allow *' mon 'allow profile osd' -i /var/lib/ceph/osd/$cluster_name-$osd_num/keyring
 
-#Add your Ceph Node to the CRUSH map.
-ceph --cluster $cluster_name osd crush add-bucket $HOSTNAME host
+	#Create the OSD directory
+	mkdir /var/lib/ceph/osd/$cluster_name-$osd_num
 
-#Place the Ceph Node under the root default
-ceph --cluster $cluster_name osd crush move $HOSTNAME root=default
+	first_partition=( $(fdisk -l 2>/dev/null | cut -d" " -f1 | grep "^/dev" | grep "1$" | grep -v "sda") )
+	#This will output only the partitions created earlier
+	#/dev/sdb1
+	#/dev/sdc1
 
-#Add the OSD to the CRUSH map so that it can begin receiving data. You may also decompile the CRUSH map, add the OSD to the device list, add the host as a bucket (if it’s not already in the CRUSH map), add the device as an item in the host, assign it a weight, recompile it and set it.
-ceph --cluster $cluster_name  osd crush add osd."$osd_num" 1.0 host="$HOSTNAME"
+	mkfs -t xfs ${first_partition[y]} #This will represent /dev/sdb1, /dev/sdc1, etc
 
-#Start the OSD daemon
-ceph-osd -i $osd_num --cluster $cluster_name
+	mount -o inode64 ${first_partition[y]} /var/lib/ceph/osd/$cluster_name-$osd_num
+
+	#Initialize the OSD data directory
+	ceph-osd --cluster $cluster_name -i $osd_num --mkfs --mkkey --osd-uuid $osd_uuid
+
+	#Register the OSD Authentification key
+	ceph --cluster $cluster_name auth add osd."$osd_num" osd 'allow *' mon 'allow profile osd' -i /var/lib/ceph/osd/$cluster_name-$osd_num/keyring
+
+	#Add your Ceph Node to the CRUSH map.
+	ceph --cluster $cluster_name osd crush add-bucket $HOSTNAME host
+	
+	#Place the Ceph Node under the root default
+	ceph --cluster $cluster_name osd crush move $HOSTNAME root=default
+
+	#Add the OSD to the CRUSH map so that it can begin receiving data. You may also decompile the CRUSH map, add the OSD to the device list, add the host as a bucket (if it’s not already in the CRUSH map), add the device as an item in the host, assign it a weight, recompile it and set it.
+	ceph --cluster $cluster_name  osd crush add osd."$osd_num" 1.0 host="$HOSTNAME"
+
+	#Start the OSD daemon
+	ceph-osd -i $osd_num --cluster $cluster_name
 
 ###**************Important****************
 #We need to add the mount to /etc/fstab to mount autimatically after a reboot
 #We need to add ceph-osd -i $osd_num --cluster $cluster_name to the /etc/rc.local to start on reboot
 
 
-
+done
 
 
 
