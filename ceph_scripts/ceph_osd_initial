@@ -11,7 +11,7 @@ source export_file
 
 #We find and create a table with the available disks (/dev/sda is already used for the OS)
 
-disk_partition=( $(fdisk -l 2>/dev/null | grep "/dev/sd[b-z][^1-9]" | cut -d"/" -f2,3 | cut -d":" -f1) )
+disk_partition=( $(fdisk -l 2>/dev/null | grep "/dev/sd[b-z][^1-9]" | cut -d" " -f2 | cut -d":" -f1) )
 #/dev/sdb
 #/dev/sdc
 echo  ${#disk_partition[@]} 
