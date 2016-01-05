@@ -11,6 +11,7 @@ source export_file
 
 #We find and create a table with the available disks (/dev/sda is already used for the OS)
 
+echo $cluster_name
 disk_partition=( $(fdisk -l 2>/dev/null | grep "/dev/sd[b-z][^1-9]" | cut -d" " -f2 | cut -d":" -f1) )
 #/dev/sdb
 #/dev/sdc
@@ -22,7 +23,7 @@ do
 #We do a loop in order to run the fdisk command and all the requiered disks
 
         echo "We are going to configure ${disk_partition[z]}"
-        fdisk ${disk_partition[z]}
+        fdisk ${disk_partition[z]} 2> /dev/null
         (( z++ ))
 done
 
@@ -73,7 +74,7 @@ do
 ###**************Important****************
 #We need to add the mount to /etc/fstab to mount autimatically after a reboot
 #We need to add ceph-osd -i $osd_num --cluster $cluster_name to the /etc/rc.local to start on reboot
-
+	(( y++ ))
 
 done
 
