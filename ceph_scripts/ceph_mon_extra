@@ -111,4 +111,4 @@ rm ceph_0.94.5-1trusty_amd64.deb*
 bash sources/ceph_scp
 
 
-
+echo -e "\nExtra Monitor Installation has been completed\n"

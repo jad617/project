@@ -142,8 +142,4 @@ echo "cluster_name=$cluster_name" > export_file
 
 bash sources/ceph_scp
 
-
-
-
-
-
+echo -e "\n***Initial Monitor Installation has been completed***\n"
