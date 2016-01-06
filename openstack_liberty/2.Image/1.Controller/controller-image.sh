@@ -84,6 +84,9 @@ sed -i "s/DB_pass/${glanceDB_pass}/g" /etc/glance/glance-registry.conf
 sed -i "s/GLANCE_USER_PASS/${glance_user_pass}/g" /etc/glance/glance-registry.conf
 sed -i "s/RABBIT_PASS/${rabbit_pass}/g" /etc/glance/glance-registry.conf
 
+#------Ceph config--------#
+sed -i "s/CLUSTER_NAME/$cluster_name/g" /etc/glance/glance-api.conf
+#-------------------------#
 su -s /bin/sh -c "glance-manage db_sync" glance
 
 service glance-registry restart
