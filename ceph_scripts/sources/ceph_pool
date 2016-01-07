@@ -1,0 +1,32 @@
+#! /bin/bash
+
+cd "$(dirname "$0")"
+
+
+source ../export_file
+
+#---------------------------Script for pool creation and preparation for Openstack-----------------------#
+
+read -p "How many pools do you want to create?" pool_num
+
+echo $pool_num
+
+w=0
+while [ $w -lt $pool_num ]
+do
+#We send the values to create all the necessary pools with their respective PG value
+
+	read -p "What is the name for the new pool to create?: " pool_name
+	read -p "What is the value for the pg? [Default=128]: " pg_value
+	
+	if [ -z $pg_value ]
+	then
+		pg_value=128
+	fi
+	
+	ceph --cluster $cluster_name pool create $pool_name $pg_value
+	
+	(( w++ ))
+done
+
+
