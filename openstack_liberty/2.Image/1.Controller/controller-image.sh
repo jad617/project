@@ -84,9 +84,35 @@ sed -i "s/DB_pass/${glanceDB_pass}/g" /etc/glance/glance-registry.conf
 sed -i "s/GLANCE_USER_PASS/${glance_user_pass}/g" /etc/glance/glance-registry.conf
 sed -i "s/RABBIT_PASS/${rabbit_pass}/g" /etc/glance/glance-registry.conf
 
-#------Ceph config--------#
-sed -i "s/CLUSTER_NAME/$cluster_name/g" /etc/glance/glance-api.conf
-#-------------------------#
+#------Ceph config------------------------------------------------------------------------#
+###To choose between ceph or local image directory
+echo -e "\nSelect the storage method that you want to use:\n"
+                echo -e "1) ceph Storage\n2)Local Storage"
+                read -p "Enter the number: " storage_answer
+if [ "$storage_answer" = "1" ]
+then
+	sed -i "s/#hw_scsi_model/hw_scsi_model/g" /etc/glance/glance-api.conf
+	sed -i "s/#hw_disk_bus/hw_disk_bus/g" /etc/glance/glance-api.conf
+	sed -i "s/#hw_qemu_guest_agent/hw_qemu_guest_agent/g" /etc/glance/glance-api.conf
+	sed -i "s/#os_require_quiesce/os_require_quiesce/g" /etc/glance/glance-api.conf
+	
+	sed -i "s/#rbd_store_pool/rbd_store_pool/g" /etc/glance/glance-api.conf
+	sed -i "s/#rbd_store_user/rbd_store_user/g" /etc/glance/glance-api.conf
+	sed -i "s/#rbd_store_ceph_conf/rbd_store_ceph_conf/g" /etc/glance/glance-api.conf
+	sed -i "s/CLUSTER_NAME/$cluster_name/g" /etc/glance/glance-api.conf
+	sed -i "s/#rbd_store_chunk_size/rbd_store_chunk_size/g" /etc/glance/glance-api.conf
+	
+	sed -i "s/CEPH/rbd/g" /etc/glance/glance-api.conf
+	sed -i "s/STORES/glance.store.rbd.Store/g" /etc/glance/glance-api.conf
+	
+elif [ "$storage_answer" = "2" ]
+	sed -i "s/CEPH/file/g" /etc/glance/glance-api.conf
+	sed -i "s/STORES/file/g" /etc/glance/glance-api.conf
+	sed -i "s/#filesystem_store_datadir/filesystem_store_datadir/g" /etc/glance/glance-api.conf
+else
+fi
+
+#-----------------------------------------------------------------------------------------#
 su -s /bin/sh -c "glance-manage db_sync" glance
 
 service glance-registry restart
