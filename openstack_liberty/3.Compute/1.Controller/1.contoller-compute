@@ -3,6 +3,7 @@
 #We source the passwords
 source ../../0.General/pass_file
 env | grep pass
+source ../../../ceph_scripts/export_file
 
 ###########################Compute Database Configuration--------------------
 

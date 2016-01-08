@@ -141,6 +141,10 @@ echo "export OS_IMAGE_API_VERSION=2" >> /root/demo-openrc.sh
 
 source /root/admin-openrc.sh
 
+env | grep OS
+env | grep pass
+
+
 mkdir /tmp/images
 
 wget -P /tmp/images http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
@@ -154,8 +158,3 @@ rm -r /tmp/images
 
 
 echo -e "\nGlance installation is completed\n"
-
-env | grep OS
-env | grep pass
-
-
