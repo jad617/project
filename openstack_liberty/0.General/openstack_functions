@@ -1,32 +1,41 @@
 #! /bin/bash
 
 #-----------------------------------------Functions to be incorporated inside our OpenStack Installation Scripts--------------------------------------------
-source pass_file
+#source pass_file
 
+
+### MySQL function: we use it in every script were we would need to create a MySQL databse for an OpenStack service: keystone, glance, nova, etc
 f_mysql()
 {
 
-###We add the password to the ../../0.General/pass_file
-echo -e "#KEYSTONE_DBPASS:\nexport keystone_pass=${keystone_pass} \n" >> ../../0.General/pass_file
-echo -e "#Unset KEYSTONE_DBPASS:\nunset keystone_pass" >> ../../0.General/unset_file
+# $1 will be the database name ex: keystone, glance, nova
+# $2 will be the password value returned by "$(openssl rand -hex 10)" in the script
 
-Q1="CREATE DATABASE keystone;"
-Q2="GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'localhost' \
-  IDENTIFIED BY '$1';"
-Q3="GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' \
-  IDENTIFIED BY '$1';"
+#EX:	f_mysql keystone password123
+
+#We upper the $1 for the DBPASS
+local db_name="${1^^}_DBPASS"
+#We create the password name to be added in the "pass_file" for export purposes
+local pass_name="${1}_pass"
+
+###We add the password to the ../../0.General/pass_file
+echo -e "#$db_name:\nexport $pass_name=$2 \n" >> ../../0.General/pass_file
+echo -e "#Unset $db_name:\nunset $pass_name=$2" >> ../../0.General/unset_file
+
+
+Q1="CREATE DATABASE $1;"
+Q2="GRANT ALL PRIVILEGES ON $1.* TO '$1'@'localhost' \
+  IDENTIFIED BY '$2';"
+Q3="GRANT ALL PRIVILEGES ON $1.* TO '$1'@'%' \
+  IDENTIFIED BY '$2';"
 SQL="${Q1}${Q2}${Q3}"
 
 
-echo -e "\n"
-read -s -p "What is the root password for MySQL?: " mysql_pass
-echo -e "\n"
 
-echo -e "#MySQL:\nmysql_pass=$mysql_pass\n" >> ../../0.General/pass_file
+echo "mysql -uroot -p"$mysql_pass" -e "DROP DATABASE $1;" "     ###TO BE REMOVED AFTER TESTING THE CODE#####
+#mysql -uroot -p"$mysql_pass" -e "$SQL"
 
-mysql -uroot -p"$mysql_pass" -e "DROP DATABASE keystone;"      ###TO BE REMOVED AFTER TESTING THE CODE#####
-mysql -uroot -p"$mysql_pass" -e "$SQL"
-
-echo -e "\nKeystone Database Configured\n"
+#echo -e "\nKeystone Database Configured\n"
 
 }
+
