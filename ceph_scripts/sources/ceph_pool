@@ -24,7 +24,7 @@ do
 		pg_value=128
 	fi
 	
-	ceph --cluster $cluster_name pool create $pool_name $pg_value
+	ceph --cluster $cluster_name osd pool create $pool_name $pg_value
 	
 	(( w++ ))
 done
