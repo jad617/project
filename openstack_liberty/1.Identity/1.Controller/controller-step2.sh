@@ -61,9 +61,16 @@ bash ../../0.General/rabbit_install
 
 keystone_pass="$(openssl rand -hex 10)"
 
+#Testing f_mysql function -----------------------------------------------#
+
+#f_mysql keystone $keystone_pass
+
+##########################-----------------------------------------------#
+
+
 ###We add the password to the ../../0.General/pass_file
 echo -e "#KEYSTONE_DBPASS:\nexport keystone_pass=${keystone_pass} \n" >> ../../0.General/pass_file
-echo -e "#Unset KEYSTONE_DBPASS:\nunset keystone_pass" >> ../../0.General/unset_file
+echo -e "#Unset KEYSTONE_DBPASS:\nunset keystone_pass=${keystone_pass}" >> ../../0.General/unset_file
 
 Q1="CREATE DATABASE keystone;"
 Q2="GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'localhost' \
@@ -72,12 +79,6 @@ Q3="GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' \
   IDENTIFIED BY '${keystone_pass}';"
 SQL="${Q1}${Q2}${Q3}"
 
-
-echo -e "\n"
-read -s -p "What is the root password for MySQL?: " mysql_pass
-echo -e "\n"
-
-echo -e "#MySQL:\nmysql_pass=$mysql_pass\n" >> ../../0.General/pass_file
 
 mysql -uroot -p"$mysql_pass" -e "DROP DATABASE keystone;"      ###TO BE REMOVED AFTER TESTING THE CODE#####
 mysql -uroot -p"$mysql_pass" -e "$SQL"

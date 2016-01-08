@@ -1,13 +1,20 @@
 #! /bin/bash
 
 #We source the passwords
-source ../../0.General/pass_file
-env | grep pass
-source ../../../ceph_scripts/export_file
+source ../../0.General/pass_file #for all the OpenStack Generated Passwords
+
+source ../../../ceph_scripts/export_file #for all the Ceph Genertated Passwords
+
+source ../../0.General/openstack_functions # for all the OpenStack Functions created
 
 ###########################Compute Database Configuration--------------------
 
 novaDB_pass="$(openssl rand -hex 10)"
+#---------------------------Testing functions------------#
+
+#f_mysql $novaDB_pass
+
+#--------------------------------------------------------#
 
 ###We add the password to the ../0.General/pass_file
 echo -e "#NOVA_DBPASS:\nexport novaDB_pass=${novaDB_pass} \n" >> ../../0.General/pass_file
