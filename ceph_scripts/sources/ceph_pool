@@ -7,7 +7,7 @@ source ../export_file
 
 #---------------------------Script for pool creation and preparation for Openstack-----------------------#
 
-read -p "How many pools do you want to create in Ceph for Openstack?" pool_num
+read -p "How many pools do you want to create in Ceph for Openstack?: " pool_num
 
 echo $pool_num
 
