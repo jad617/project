@@ -54,7 +54,7 @@ echo -e "#Unset OpenStack Glance user pass:\n unset glance_user_pass=${glance_us
 
 
 #Create the glance user:
-openstack user create --password $glance_user_pass  glance
+openstack user create --domain default --password $glance_user_pass glance
 
 #Add the admin role to the glance user and service project:
 openstack role add --project service --user glance admin
