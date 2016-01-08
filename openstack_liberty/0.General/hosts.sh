@@ -1,5 +1,8 @@
 #!/bin/bash
 
+
+cd "$(dirname "$0")"
+
 #--------------------------Default entries--------------------------------------
 
 host_file=/etc/hosts

@@ -1,5 +1,7 @@
 #! /bin/bash
 
+cd "$(dirname "$0")"
+
 source ../../0.General/pass_file
 
 source ../../../ceph_scripts/export_file

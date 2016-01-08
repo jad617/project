@@ -1,5 +1,8 @@
 #!/bin/bash
 
+
+cd "$(dirname "$0")"
+
 apt-get -y install nagios-nrpe-server nagios-plugins
 
 cp sources/nrpe.cfg /etc/nagios/nrpe.cfg

@@ -1,5 +1,8 @@
 #! /bin/bash
 
+cd "$(dirname "$0")"
+
+
 if [ -f ../../0.General/pass_file ] || [ -f ../../0.General/unset_file ]
 then
 	rm ../../0.General/pass_file ../../0.General/unset_file

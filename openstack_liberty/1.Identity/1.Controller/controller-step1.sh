@@ -1,5 +1,8 @@
 #! /bin/bash
 
+
+cd "$(dirname "$0")"
+
 #------------------------------Ceph Pool Configuration--------------------------------------
 
 bash ../../../ceph_scripts/sources/ceph_pool
