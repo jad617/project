@@ -163,7 +163,7 @@ glance image-create --name "cirros-0.3.4-x86_64" --file /tmp/images/cirros-0.3.4
 
 glance image-list
 
-rm -r /tmp/images
+rm -rf /tmp/images
 
 
 echo -e "\nGlance installation is completed\n"

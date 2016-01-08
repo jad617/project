@@ -19,9 +19,5 @@ apt-get install -y libaio1 libsnappy1 libcurl3 curl libgoogle-perftools4 libgoog
 dpkg -i ceph_0.94.5-1trusty_amd64.deb
 apt-get install -y libaio1 libsnappy1 libcurl3 curl libgoogle-perftools4 libgoogle-perftools4 google-perftools libleveldb1
 apt-get -fy install
-apt-get update && sudo apt-get install -y ceph
-apt-get install -y qemu
-apt-get install -y libvirt-bin
-
 
 echo -e "\nPackage Installation is done\nProceed to next step:\n"
