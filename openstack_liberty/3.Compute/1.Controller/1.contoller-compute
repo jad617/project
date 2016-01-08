@@ -10,29 +10,12 @@ source ../../0.General/openstack_functions # for all the OpenStack Functions cre
 ###########################Compute Database Configuration--------------------
 
 novaDB_pass="$(openssl rand -hex 10)"
-#---------------------------Testing functions------------#
 
-#f_mysql $novaDB_pass
-
-#--------------------------------------------------------#
-
-###We add the password to the ../0.General/pass_file
-echo -e "#NOVA_DBPASS:\nexport novaDB_pass=${novaDB_pass} \n" >> ../../0.General/pass_file
-echo -e "#Unset NOVA_DBPASS:\nunset novaDB_pass=${novaDB_pass} \n" >> ../../0.General/unset_file
-
-Q1="CREATE DATABASE nova;"
-Q2="GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'localhost' \
-  IDENTIFIED BY '${novaDB_pass}';"
-Q3="GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'%' \
-  IDENTIFIED BY '${novaDB_pass}';"
-SQL="${Q1}${Q2}${Q3}"
+#To created the nova Database with its password
+f_mysql nova $novaDB_pass
 
 
-echo -e "\n"
-read -s -p "What is the root password for MySQL?: " mysql_pass
-echo -e "\n"
 
-mysql -uroot -p"$mysql_pass" -e "$SQL"
 
 ###########------------------Creating Nova Users---------------------##########
 
