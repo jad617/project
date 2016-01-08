@@ -10,20 +10,20 @@ source ../../0.General/openstack_functions
 
 ####We generate the Glance Database Password
 
-glanceDB_pass="$(openssl rand -hex 10)"
+glance_pass="$(openssl rand -hex 10)"
 
 #We run the MySQL function from ../../0.General/openstack_functions
-f_mysql glance $glanceDB_pass
+f_mysql glance $glance_pass
 #********************************************************************TO REMOVE ONCE TESTED***************************************#
 ###We add the password to the ../../0.General/pass_file
-#echo -e "#GLANCE_DBPASS:\nexport glanceDB_pass=${glanceDB_pass} \n" >> ../../0.General/pass_file
-#echo -e "#Unset KEYSTONE_DBPASS:\nunset glanceDB_pass=${glanceDB_pass} \n" >> ../../0.General/unset_file
+#echo -e "#GLANCE_DBPASS:\nexport glance_pass=${glance_pass} \n" >> ../../0.General/pass_file
+#echo -e "#Unset KEYSTONE_DBPASS:\nunset glance_pass=${glance_pass} \n" >> ../../0.General/unset_file
 
 #Q1="CREATE DATABASE glance;"
 #Q2="GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' \
-#  IDENTIFIED BY '${glanceDB_pass}';"
+#  IDENTIFIED BY '${glance_pass}';"
 #Q3="GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' \
-#  IDENTIFIED BY '${glanceDB_pass}';"
+#  IDENTIFIED BY '${glance_pass}';"
 #SQL="${Q1}${Q2}${Q3}"
 
 
@@ -83,12 +83,12 @@ chown glance.glance /etc/glance/glance-api.conf
 cp sources/glance-registry.conf /etc/glance/glance-registry.conf
 chown glance.glance /etc/glance/glance-registry.conf
 
-sed -i "s/DB_pass/${glanceDB_pass}/g" /etc/glance/glance-api.conf
+sed -i "s/DB_pass/${glance_pass}/g" /etc/glance/glance-api.conf
 
 sed -i "s/GLANCE_USER_PASS/${glance_user_pass}/g" /etc/glance/glance-api.conf
 sed -i "s/RABBIT_PASS/${rabbit_pass}/g" /etc/glance/glance-api.conf
 
-sed -i "s/DB_pass/${glanceDB_pass}/g" /etc/glance/glance-registry.conf
+sed -i "s/DB_pass/${glance_pass}/g" /etc/glance/glance-registry.conf
 
 sed -i "s/GLANCE_USER_PASS/${glance_user_pass}/g" /etc/glance/glance-registry.conf
 sed -i "s/RABBIT_PASS/${rabbit_pass}/g" /etc/glance/glance-registry.conf
@@ -99,7 +99,7 @@ loop=true
 while [ "$loop" = true ]
 do
 	echo -e "\nSelect the storage method that you want to use:\n"
-        echo -e "1) ceph Storage\n2)Local Storage"
+        echo -e "1)ceph Storage\n2)Local Storage"
         read -p "Enter the number: " storage_answer
 
 	if [ "$storage_answer" = "1" ]
@@ -121,7 +121,7 @@ do
 
 	elif [ "$storage_answer" = "2" ]
 		sed -i "s/CEPH/file/g" /etc/glance/glance-api.conf
-		sed -i "s/STORES/file/g" /etc/glance/glance-api.conf
+		sed -i "s/STORES/glance.store.filesystem.Store/g" /etc/glance/glance-api.conf
 		sed -i "s/#filesystem_store_datadir/filesystem_store_datadir/g" /etc/glance/glance-api.conf
 		loop=false
 
