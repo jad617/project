@@ -1,7 +1,10 @@
 #! /bin/bash
 
 source ../../0.General/pass_file
+
 source ../../../ceph_scripts/export_file
+
+source ../../0.General/openstack_functions
 
 ######---------------------------------Glance Database configuration----------------------------------------
 
@@ -9,16 +12,19 @@ source ../../../ceph_scripts/export_file
 
 glanceDB_pass="$(openssl rand -hex 10)"
 
+#We run the MySQL function from ../../0.General/openstack_functions
+f_mysql glance $glanceDB_pass
+#********************************************************************TO REMOVE ONCE TESTED***************************************#
 ###We add the password to the ../../0.General/pass_file
-echo -e "#GLANCE_DBPASS:\nexport glanceDB_pass=${glanceDB_pass} \n" >> ../../0.General/pass_file
-echo -e "#Unset KEYSTONE_DBPASS:\nunset glanceDB_pass=${glanceDB_pass} \n" >> ../../0.General/unset_file
+#echo -e "#GLANCE_DBPASS:\nexport glanceDB_pass=${glanceDB_pass} \n" >> ../../0.General/pass_file
+#echo -e "#Unset KEYSTONE_DBPASS:\nunset glanceDB_pass=${glanceDB_pass} \n" >> ../../0.General/unset_file
 
-Q1="CREATE DATABASE glance;"
-Q2="GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' \
-  IDENTIFIED BY '${glanceDB_pass}';"
-Q3="GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' \
-  IDENTIFIED BY '${glanceDB_pass}';"
-SQL="${Q1}${Q2}${Q3}"
+#Q1="CREATE DATABASE glance;"
+#Q2="GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' \
+#  IDENTIFIED BY '${glanceDB_pass}';"
+#Q3="GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' \
+#  IDENTIFIED BY '${glanceDB_pass}';"
+#SQL="${Q1}${Q2}${Q3}"
 
 
 #echo -e "\n"
@@ -31,7 +37,10 @@ SQL="${Q1}${Q2}${Q3}"
 ##################TO BE REMOVED AFTER
 #mysql -uroot -p"$mysql_pass" -e "DROP DATABASE glance;"     
 ############### TESTING THE CODE#####
-mysql -uroot -p"$mysql_pass" -e "$SQL"
+#mysql -uroot -p"$mysql_pass" -e "$SQL"
+#**********************************************************************************************************************************#
+
+
 
 #################Creating Glance users and roles in Openstack
 
