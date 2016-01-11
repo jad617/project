@@ -106,6 +106,8 @@ do
 
 	if [ "$storage_answer" = "1" ]
 	then
+		f_ceph_glance
+	
 		sed -i "s/#hw_scsi_model/hw_scsi_model/g" /etc/glance/glance-api.conf
 		sed -i "s/#hw_disk_bus/hw_disk_bus/g" /etc/glance/glance-api.conf
 		sed -i "s/#hw_qemu_guest_agent/hw_qemu_guest_agent/g" /etc/glance/glance-api.conf
