@@ -8,6 +8,7 @@ source ../../../ceph_scripts/export_file
 
 source ../../0.General/openstack_functions
 
+source ceph_glance_function
 ######---------------------------------Glance Database configuration----------------------------------------
 
 ####We generate the Glance Database Password
