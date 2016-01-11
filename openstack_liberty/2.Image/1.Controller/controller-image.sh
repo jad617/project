@@ -122,6 +122,7 @@ do
 		loop=false
 
 	elif [ "$storage_answer" = "2" ]
+	then
 		sed -i "s/CEPH/file/g" /etc/glance/glance-api.conf
 		sed -i "s/STORES/glance.store.filesystem.Store/g" /etc/glance/glance-api.conf
 		sed -i "s/#filesystem_store_datadir/filesystem_store_datadir/g" /etc/glance/glance-api.conf
