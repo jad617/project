@@ -1,5 +1,7 @@
 #! /bin/bash
 
+cd "$(dirname "$0")"
+
 #We source the passwords
 source ../../0.General/pass_file #for all the OpenStack Generated Passwords
 
@@ -27,7 +29,7 @@ echo -e "#OpenStack Nova user pass:\nexport nova_user_pass=${nova_user_pass} \n"
 echo -e "#Unset OpenStack Nova user pass:\nunset nova_user_pass=${nova_user_pass}\n" >> ../../0.General/unset_file
 
 #Create the nova user:
-openstack user create --password $nova_user_pass nova
+openstack user create --domain default --password $nova_user_pass nova
 
 #Add the admin role to the nova user:
 openstack role add --project service --user nova admin
@@ -37,13 +39,14 @@ openstack service create --name nova \
   --description "OpenStack Compute" compute
 
 #Create the Compute service API endpoint:
-openstack endpoint create \
-  --publicurl http://controller:8774/v2/%\(tenant_id\)s \
-  --internalurl http://controller:8774/v2/%\(tenant_id\)s \
-  --adminurl http://controller:8774/v2/%\(tenant_id\)s \
-  --region RegionOne \
-  compute
+openstack endpoint create --region RegionOne \
+  compute public http://controller:8774/v2/%\(tenant_id\)s
 
+openstack endpoint create --region RegionOne \
+  compute internal http://controller:8774/v2/%\(tenant_id\)s
+
+openstack endpoint create --region RegionOne \
+  compute admin http://controller:8774/v2/%\(tenant_id\)s
 
 ###---------------------INSTALL the packages and services--------------
 apt-get install -y nova-api nova-cert nova-conductor nova-consoleauth \
