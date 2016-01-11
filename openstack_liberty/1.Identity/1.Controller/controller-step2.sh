@@ -19,6 +19,8 @@ echo -e "#! /bin/bash" > ../../0.General/unset_file
 #------------------------------MySQL installation------------------------------------------------
 
 bash ../../0.General/mysql_install
+
+source ../../0.General/pass_file
 #apt-get install -y mariadb-server python-mysqldb
 
 #cp sources/mysqld_openstack.cnf /etc/mysql/conf.d/mysqld_openstack.cnf
@@ -252,7 +254,7 @@ unset OS_URL
 openstack --os-auth-url http://controller:35357/v3 \
   --os-project-domain-id default --os-user-domain-id default \
   --os-project-name admin --os-username admin --os-auth-type password \
-  token issue
+  --os-password $admin_pass token issue
 
 if [ "$?" -ne 0 ]
 then
@@ -264,7 +266,7 @@ fi
 openstack --os-auth-url http://controller:5000/v3 \
   --os-project-domain-id default --os-user-domain-id default \
   --os-project-name demo --os-username demo --os-auth-type password \
-  token issue
+  --os-password $demo_pass token issue
 
 if [ "$?" -ne 0 ]
 then

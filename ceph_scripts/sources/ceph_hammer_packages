@@ -15,8 +15,8 @@ dpkg -i ceph_0.94.5-1trusty_amd64.deb
 apt-get update
 apt-get install -y libaio1 libsnappy1 libcurl3 curl libgoogle-perftools4 libgoogle-perftools4 google-perftools libleveldb1
 apt-get --force-yes -y -f install
-apt-get install -y libaio1 libsnappy1 libcurl3 curl libgoogle-perftools4 libgoogle-perftools4 google-perftools libleveldb1
-dpkg -i ceph_0.94.5-1trusty_amd64.deb
-apt-get install -y libaio1 libsnappy1 libcurl3 curl libgoogle-perftools4 libgoogle-perftools4 google-perftools libleveldb1
-apt-get --force-yes -y -f install
+#apt-get install -y libaio1 libsnappy1 libcurl3 curl libgoogle-perftools4 libgoogle-perftools4 google-perftools libleveldb1
+#dpkg -i ceph_0.94.5-1trusty_amd64.deb
+#apt-get install -y libaio1 libsnappy1 libcurl3 curl libgoogle-perftools4 libgoogle-perftools4 google-perftools libleveldb1
+#apt-get --force-yes -y -f install
 echo -e "\nPackage Installation is done\nProceed to next step:\n"

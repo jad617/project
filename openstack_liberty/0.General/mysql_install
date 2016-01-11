@@ -2,7 +2,7 @@
 
 cd "$(dirname "$0")"
 
-apt-get install mariadb-server python-pymysql
+apt-get -y install mariadb-server python-pymysql
 
 cp sources/mysqld_openstack.cnf /etc/mysql/conf.d/mysqld_openstack.cnf
 chown root.root /etc/mysql/conf.d/mysqld_openstack.cnf
