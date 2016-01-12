@@ -55,14 +55,12 @@ apt-get install -y nova-api nova-cert nova-conductor nova-consoleauth \
 cp sources/nova.conf /etc/nova/nova.conf
 chown nova.nova /etc/nova/nova.conf
 
-sed -i "s#connection = mysql://nova:NOVA_DBPASS@controller/nova#connection = mysql://nova:${novaDB_pass}@controller/nova#g" /etc/nova/nova.conf
+sed -i "s/NOVA_DBPASS/${novaDB_pass}/g" /etc/nova/nova.conf
 
-sed -i "s/password = NOVA_PASS/password = ${nova_user_pass}/g" /etc/nova/nova.conf
-sed -i "s/rabbit_password = RABBIT_PASS/rabbit_password = ${rabbit_pass}/g" /etc/nova/nova.conf
+sed -i "s/NOVA_PASS/${nova_user_pass}/g" /etc/nova/nova.conf
+sed -i "s/RABBIT_PASS/${rabbit_pass}/g" /etc/nova/nova.conf
 
-sed -i "s/my_ip = MY_IP/my_ip = $controller_ip/g" /etc/nova/nova.conf
-sed -i "s/vncserver_listen = MY_IP/vncserver_listen = $controller_ip/g" /etc/nova/nova.conf
-sed -i "s/vncserver_proxyclient_address = MY_IP/vncserver_proxyclient_address = $controller_ip/g" /etc/nova/nova.conf
+sed -i "s/MY_IP/$controller_ip/g" /etc/nova/nova.conf
 
 su -s /bin/sh -c "nova-manage db sync" nova
 
