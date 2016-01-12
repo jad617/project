@@ -13,10 +13,10 @@ source ../../0.General/ceph_openstack_functions
 
 ####We generate the Glance Database Password
 
-neutron_pass="$(openssl rand -hex 10)"
+neutron_DBpass="$(openssl rand -hex 10)"
 
 #We run the MySQL function from ../../0.General/openstack_functions
-f_mysql neutron $neutron_pass
+f_mysql neutron $neutron_DBpass
 
 #################Creating Neutron users and roles in Openstack------------------------------------------
 
@@ -52,18 +52,50 @@ apt-get install -y neutron-server neutron-plugin-openvswitch \
 neutron-plugin-openvswitch-agent neutron-common neutron-dhcp-agent \
 neutron-l3-agent neutron-metadata-agent openvswitch-switch
 
+cp sources/neutron.conf /etc/neutron.conf
+chown root.neutron /etc/neutron.conf
+
+cp sources/ml2_conf.ini /etc/neutron/plugins/ml2/ml2_conf.ini
+chown root.neutron /etc/neutron/plugins/ml2/ml2_conf.ini
+
+cp sources/metadata_agent.ini /etc/neutron/metadata_agent.ini
+chown root.neutron /etc/neutron/metadata_agent.ini
+
+cp sources/dhcp_agent.ini /etc/neutron/dhcp_agent.ini
+chown root.neutron /etc/neutron/dhcp_agent.ini
+
+cp sources/l3_agent.ini /etc/neutron/l3_agent.ini
+chown root.neutron /etc/neutron/l3_agent.ini
+
+cp sources/dnsmasq-neutron.conf /etc/neutron/dnsmasq-neutron.conf
+chown root.neutron /etc/neutron/dnsmasq-neutron.conf
+
+#---------------------------------------------Sysctl config--------------------------------#
+cp sources/sysctl.conf /etc/sysctl.conf
+chown root.root /etc/sysctl.conf
+
+#We load the kernel module
+modprobe br_netfilter
+
+#We reload the kernal configuration after the changes
+sysctl -p
+
+#-------------------------------------------------------------------------------------------#
+
+metadata_pass="$(openssl rand -hex 10)"
 
 
+sed -i "s/NEUTRON_DBPASS/${neutron_DBpass}/g" /etc/neutron.conf
+sed -i "s/RABBIT_PASS/${rabbit_pass}/g" /etc/neutron.conf
+sed -i "s/NEUTRON_PASS/${neutron_user_pass}/g" /etc/neutron.conf
+sed -i "s/NOVA_PASS/${nova_user_pass}/g" /etc/neutron.conf
 
+sed -i "s/NEUTRON_PASS/${neutron_user_pass}/g" /etc/neutron/metadata_agent.ini
+sed -i "s/METADATA_SECRET/${metadata_pass}/g" /etc/neutron/metadata_agent.ini
 
+#INsert SSH to send to compute
 
-
-
-
-
-
-
-
+#ssh -t -p $node_port $node_user@$node_ip "sudo mv /tmp/"$cluster_name".conf $folder_path"
 
 
 
