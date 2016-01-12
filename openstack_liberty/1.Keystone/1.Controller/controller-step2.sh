@@ -21,44 +21,12 @@ echo -e "#! /bin/bash" > ../../0.General/unset_file
 bash ../../0.General/mysql_install
 
 source ../../0.General/pass_file
-#apt-get install -y mariadb-server python-mysqldb
 
-#cp sources/mysqld_openstack.cnf /etc/mysql/conf.d/mysqld_openstack.cnf
-#chown root.root /etc/mysql/conf.d/mysqld_openstack.cnf
-
-#echo -e "\n"
-#read -p "What is the IP of the Controller?: " controller_ip
-#echo -e "\n"
-
-#echo -e "#CONTROLLER_IP:\nexport controller_ip=${controller_ip} \n" >> ../../0.General/pass_file
-
-#sed -i "s/bind-address		=/bind-address		= $controller_ip/g" /etc/mysql/conf.d/mysqld_openstack.cnf
-
-#service mysql restart
-
-
-#mysql_secure_installation
-
-#echo -e "\nMaria DB Installed\n"
+#------------------------------MongoDB Installation------------------------------------------------#
+bash ../../0.General/mongodb_install
 
 ###----------------------------Messaging Queue Installation------------------------------------------
 bash ../../0.General/rabbit_install
-
-#apt-get install -y rabbitmq-server
-
-####We generate the Rabbit Password
-#rabbit_pass="$(openssl rand -hex 10)"
-
-
-#####We add the password to the ../../0.General/pass_file
-#echo -e "#RABBIT_PASS:\nexport rabbit_pass=${rabbit_pass} \n" >> ../../0.General/pass_file
-#echo -e "#Unset RABBIT_PASS:\nunset rabbit_pass\n" >> ../../0.General/unset_file
-
-#rabbitmqctl add_user openstack ${rabbit_pass}
-
-#rabbitmqctl set_permissions openstack ".*" ".*" ".*"
-
-#echo -e "\nRabbit MQ Installed\n"
 
 ######---------------------------------Identity Database configuration----------------------------------------
 
