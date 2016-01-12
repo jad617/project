@@ -1,0 +1,20 @@
+#! /bin/bash
+
+cd "$(dirname "$0")"
+
+
+apt-get update
+apt-get install chrony -y
+
+sed -i "s/server/#server/g" /etc/chrony/chrony.conf
+echo "server 0.ca.pool.ntp.org iburst
+server 1.ca.pool.ntp.org
+server 2.ca.pool.ntp.org
+server 3.ca.pool.ntp.org" >> /etc/chrony/chrony.conf
+
+service chrony restart
+
+chronyc sources
+
+read -p "Verification for Chrony, press any key to continue:" fake1
+

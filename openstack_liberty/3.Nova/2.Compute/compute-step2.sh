@@ -3,7 +3,8 @@
 
 #We source the passwords
 source ../../0.General/pass_file
-env | grep pass
+
+source ../../0.General/ceph_openstack_functions
 
 #------------------------------------Step 2 Installation Compute node------------------------------
 
