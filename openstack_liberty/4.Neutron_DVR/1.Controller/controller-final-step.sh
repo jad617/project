@@ -14,3 +14,15 @@ service neutron-l3-agent restart
 
 
 rm -f /var/lib/neutron/neutron.sqlite
+
+#--------------------------------------------------------
+
+echo -e "\nNeutron setup is done\n"
+read -p "We are now going to proceed with the verification. Pres any key to continue: " fake
+
+source /root/admin-openrc.sh
+
+neutron ext-list
+
+neutron agent-list
+
