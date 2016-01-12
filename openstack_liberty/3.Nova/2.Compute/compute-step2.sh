@@ -4,7 +4,7 @@
 #We source the passwords
 source ../../0.General/pass_file
 
-source ../../0.General/ceph_openstack_functions
+#source ../../0.General/ceph_openstack_functions ###This will be usefull when configuring the Cinder service on the compute
 
 #------------------------------------Step 2 Installation Compute node------------------------------
 
