@@ -1,26 +1,43 @@
 #! /bin/bash
 
-echo "net.ipv4.conf.default.rp_filter=0" >> /etc/sysctl.conf
-echo "net.ipv4.conf.all.rp_filter=0" >> /etc/sysctl.conf
+source ../../0.General/pass_file #for all the OpenStack Generated Passwords
 
-echo "net.bridge.bridge-nf-call-iptables=1" >> /etc/sysctl.conf
-echo "net.bridge.bridge-nf-call-ip6tables=1" >> /etc/sysctl.conf
+source ../../../ceph_scripts/export_file #for all the Ceph Genertated Passwords
+
+source ../../0.General/openstack_functions # for all the OpenStack Functions created
+
+#----------------------------------------------------------------------------------------#
 
 modprobe br_netfilter
 
 sysctl -p
 
-apt-get install -y neutron-plugin-ml2 neutron-plugin-openvswitch-agent
+#apt-get install -y neutron-plugin-ml2 neutron-plugin-openvswitch-agent
 
-cp ./neutron.conf /etc/neutron/neutron.conf
+cp sources/neutron.conf /etc/neutron/neutron.conf
 
 chown root.neutron /etc/neutron/neutron.conf
 
-cp ./ml2_conf.ini /etc/neutron/plugins/ml2/
+cp sources/ml2_conf.ini /etc/neutron/plugins/ml2/
 chown root.neutron /etc/neutron/plugins/ml2/ml2_conf.ini
 
-read -p "What is the IP inside the neutron server?: " ip_compute
-sed -i "s/local_ip =/local_ip = $ip_compute/g" /etc/neutron/plugins/ml2/ml2_conf.ini
+
+sed -i "s/NEUTRON_PASS/${neutron_user_pass}/g" /etc/nova/nova.conf
+sed -i "s/METADATA_SECRET/${metadata_pass}/g" /etc/nova/nova.conf
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 service openvswitch-switch restart
 
