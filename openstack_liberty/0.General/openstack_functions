@@ -4,7 +4,7 @@
 cd "$(dirname "$0")"
 
 #-----------------------------------------Functions to be incorporated inside our OpenStack Installation Scripts--------------------------------------------
-source pass_file
+source ../../0.General/pass_file
 #**************
 #For futur modifications, we actually  
 ##***********
