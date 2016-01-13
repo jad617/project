@@ -3,7 +3,7 @@
 cd "$(dirname "$0")"
 
 ###-------------------------------------------------------Initial Monitor Script---------------------------------------------------------------
-
+source export_file 
 ###---We start the installation script first
 sudo bash sources/ceph_hammer_packages
 
@@ -28,11 +28,13 @@ config_answer=true
 while [ "$config_answer" = true ]
 do
 	#We take the name of the cluster
-	read -p "What is the name of your cluster?: [Default=ceph] " cluster_name
-	if [ -z $cluster_name ]
-	then
-        	cluster_name="ceph"
-	fi
+#	read -p "What is the name of your cluster?: [Default=ceph] " cluster_name
+#	if [ -z $cluster_name ]
+#	then
+#        	cluster_name="ceph"
+#	fi
+#	echo "cluster_name=$cluster_name" > export_file
+	
 	read -p "What is the IP/CIDR of your Public Network? [ex: 167.114.145.0/24]: " public_network
 	read -p "What is the IP/CIDR of your Cluster Network? [ex: 10.0.1.0/24]: " cluster_network
 
@@ -138,7 +140,6 @@ ceph --cluster $cluster_name -s
 rm ceph_0.94.5-1trusty_amd64.deb*
 
 
-echo "cluster_name=$cluster_name" > export_file
 
 bash sources/ceph_scp
 
