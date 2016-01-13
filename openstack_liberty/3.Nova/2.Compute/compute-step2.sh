@@ -3,7 +3,8 @@
 
 #We source the passwords
 source ../../0.General/pass_file
-
+source ../../../ceph_scripts/export_file
+`
 #source ../../0.General/ceph_openstack_functions ###This will be usefull when configuring the Cinder service on the compute
 
 #------------------------------------Step 2 Installation Compute node------------------------------
@@ -20,6 +21,7 @@ sed -i "s/MY_IP/$compute_ip/g" /etc/nova/nova.conf
 
 sed -i "s/NOVA_PASS/${nova_user_pass}/g" /etc/nova/nova.conf
 sed -i "s/RABBIT_PASS/${rabbit_pass}/g" /etc/nova/nova.conf
+sed -i "s/CLUSTER_NAME/${cluster_name}/g" /etc/nova/nova.conf
 
 service nova-compute restart
 

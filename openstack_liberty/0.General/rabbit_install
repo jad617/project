@@ -5,14 +5,6 @@ cd "$(dirname "$0")"
 
 apt-get install -y rabbitmq-server
 
-####We generate the Rabbit Password
-rabbit_pass="$(openssl rand -hex 10)"
-
-
-#####We add the password to the ../../0.General/pass_file
-echo -e "#RABBIT_PASS:\nexport rabbit_pass=${rabbit_pass} \n" >> pass_file
-echo -e "#Unset RABBIT_PASS:\nunset rabbit_pass\n" >> unset_file
-
 rabbitmqctl add_user openstack ${rabbit_pass}
 
 rabbitmqctl set_permissions openstack ".*" ".*" ".*"

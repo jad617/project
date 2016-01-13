@@ -11,20 +11,11 @@ source ../../0.General/openstack_functions
 source ../../0.General/ceph_openstack_functions
 ######---------------------------------Glance Database configuration----------------------------------------
 
-####We generate the Glance Database Password
-
-neutron_DBpass="$(openssl rand -hex 10)"
-
 #We run the MySQL function from ../../0.General/openstack_functions
 f_mysql neutron $neutron_DBpass
 
 #################Creating Neutron users and roles in Openstack------------------------------------------
-
 source /root/admin-openrc.sh
-
-neutron_user_pass="$(openssl rand -hex 10)"
-
-echo -e "#OpenStack Glance user pass:\nexport glance_user_pass=${neutron_user_pass} \n" >> ../../0.General/pass_file
 
 #Create the neutron user
 openstack user create --domain default --password ${neutron_user_pass} neutron
@@ -81,9 +72,6 @@ modprobe br_netfilter
 sysctl -p
 
 #-------------------------------------------------------------------------------------------#
-
-metadata_pass="$(openssl rand -hex 10)"
-
 
 sed -i "s/NEUTRON_DBPASS/${neutron_DBpass}/g" /etc/neutron.conf
 sed -i "s/RABBIT_PASS/${rabbit_pass}/g" /etc/neutron.conf

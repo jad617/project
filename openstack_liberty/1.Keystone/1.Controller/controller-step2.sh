@@ -2,26 +2,13 @@
 
 cd "$(dirname "$0")"
 
-
-if [ -f ../../0.General/pass_file ] || [ -f ../../0.General/unset_file ]
-then
-	rm ../../0.General/pass_file ../../0.General/unset_file
-fi
-
-touch ../../0.General/pass_file
-chmod 700 ../../0.General/pass_file
-echo -e "#! /bin/bash" > ../../0.General/pass_file
-
-touch ../../0.General/unset_file
-chmod 700 ../../0.General/unset_file
-echo -e "#! /bin/bash" > ../../0.General/unset_file
-
 #------------------------------MySQL installation------------------------------------------------
 
 bash ../../0.General/mysql_install
 
 source ../../0.General/pass_file
 
+source ../../0.General/openstack_functions
 #------------------------------MongoDB Installation------------------------------------------------#
 bash ../../0.General/mongodb_install
 
@@ -30,33 +17,10 @@ bash ../../0.General/rabbit_install
 
 ######---------------------------------Identity Database configuration----------------------------------------
 
-####We generate the Keyston Database Password
+#We create the MySQL DB
 
-keystone_pass="$(openssl rand -hex 10)"
+f_mysql keystone $keystone_DBpass
 
-#Testing f_mysql function -----------------------------------------------#
-
-#f_mysql keystone $keystone_pass
-
-##########################-----------------------------------------------#
-
-
-###We add the password to the ../../0.General/pass_file
-echo -e "#KEYSTONE_DBPASS:\nexport keystone_pass=${keystone_pass} \n" >> ../../0.General/pass_file
-echo -e "#Unset KEYSTONE_DBPASS:\nunset keystone_pass=${keystone_pass}" >> ../../0.General/unset_file
-
-Q1="CREATE DATABASE keystone;"
-Q2="GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'localhost' \
-  IDENTIFIED BY '${keystone_pass}';"
-Q3="GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' \
-  IDENTIFIED BY '${keystone_pass}';"
-SQL="${Q1}${Q2}${Q3}"
-
-
-mysql -uroot -p"$mysql_pass" -e "DROP DATABASE keystone;"      ###TO BE REMOVED AFTER TESTING THE CODE#####
-mysql -uroot -p"$mysql_pass" -e "$SQL"
-
-echo -e "\nKeystone Database Configured\n"
 
 ###---------------------------------Keystone Installation--------------------------------
 
@@ -67,13 +31,10 @@ apt-get install -y keystone apache2 libapache2-mod-wsgi memcached python-memcach
 cp sources/keystone.conf /etc/keystone/keystone.conf
 chown root.root /etc/keystone/keystone.conf
 
-TOKEN="$(openssl rand -hex 10)"
-echo -e "#TOKEN:\nexport TOKEN=${TOKEN} \n" >> ../../0.General/pass_file
-echo -e "#Unset TOKEN:\nunset TOKEN\n" >> ../../0.General/unset_file
 
 sed -i "s/ADMIN_TOKEN/${TOKEN}/g" /etc/keystone/keystone.conf
 
-sed -i "s/KEYSTONE_DBPASS/${keystone_pass}/g" /etc/keystone/keystone.conf
+sed -i "s/KEYSTONE_DBPASS/${keystone_DBpass}/g" /etc/keystone/keystone.conf
 
 su -s /bin/sh -c "keystone-manage db_sync" keystone
 
@@ -109,19 +70,6 @@ echo -e "\nApached Configured\n"
 export OS_TOKEN=${TOKEN}
 export OS_URL=http://controller:35357/v3
 export OS_IDENTITY_API_VERSION=3
-
-#We generate the passwords for the users
-admin_pass="$(openssl rand -hex 10)"
-echo -e "#OpenStack Admin pass:\nexport admin_pass=${admin_pass} \n" >> ../../0.General/pass_file
-echo -e "#Unset OpenStack Admin pass:\n unset admin_pass=${admin_pass}\n" >> ../../0.General/unset_file
-
-demo_pass="$(openssl rand -hex 10)"
-echo -e "#OpenStack Demo pass:\nexport demo_pass=${demo_pass} \n" >> ../../0.General/pass_file
-echo -e "#OpenStack Demo pass:\nunset demo_pass=${demo_pass}\n" >> ../../0.General/unset_file
-
-
-
-
 
 
 #Create the service entity for the Identity service:

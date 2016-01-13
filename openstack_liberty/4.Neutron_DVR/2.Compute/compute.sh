@@ -7,7 +7,7 @@ source ../../../ceph_scripts/export_file #for all the Ceph Genertated Passwords
 source ../../0.General/openstack_functions # for all the OpenStack Functions created
 
 #--------------------------------Sysctl conf-----------------------------#
-cp source sysctl.conf /etc/sysctl.conf
+cp sources/sysctl.conf /etc/sysctl.conf
 chown root.root. /etc/sysctl.conf
 modprobe br_netfilter
 
