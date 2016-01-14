@@ -1,15 +1,5 @@
 #! /bin/bash
 
-#-----------------------------------------------------Setup Open vSwitch-------------------------#
-apt-get install -y openvswitch-switch
-
-ovs-vsctl add-br br-int
-ovs-vsctl add-br br-vlan
-ovs-vsctl add-br br-tun
-ovs-vsctl add-br br-ex
-
-ovs-vsctl add-port br-ex eth0
-
 
 
 #To find the default GATEWAY there are two commands that gives the same result
@@ -74,7 +64,24 @@ auto br-vlan
 iface br-vlan inet manual
 " > test_file
 
-service openvswitch-switch restart
+#-----------------------------------------------------Setup Open vSwitch-------------------------#
+apt-get install -y openvswitch-switch
+
+#In order for Open vSwitch to view the new Interfaces we need to reload the network configs
 service networking restart
+
+#We now create the brigdes and link them to their interface
+
+ovs-vsctl add-br br-int
+ovs-vsctl add-br br-vlan
+ovs-vsctl add-br br-tun
+ovs-vsctl add-br br-ex
+
+ovs-vsctl add-port br-ex eth0           #For external access
+ovs-vsctl add-port br-vlan eth1:vlan	#For Vlan access
+
+
+#We now restart the Open vSwitch service and reboot
+service openvswitch-switch restart
 reboot
 
