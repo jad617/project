@@ -66,7 +66,7 @@ rm -f /var/lib/nova/nova.sqlite
 
 echo -e "\nNova installation is completed on the Controller\n"
 
-bash ../../0.General/scp_script
+#bash ../../0.General/scp_script
 
 
 
