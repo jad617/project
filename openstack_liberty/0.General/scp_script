@@ -2,6 +2,7 @@
 
 cd "$(dirname "$0")"
 
+project_name="project"
 
 ###SCP transfer to other nodes
 read -p "Would you like to send those configs to another server?: [y/n] " question1
@@ -26,9 +27,11 @@ do
         fi
 
         read -p "Give the full path of your source folder: " folder_path
-        read -p "Give the full path of the destination folder: " folder_dest
+        #read -p "Give the full path of the destination folder: " folder_dest
 
-        scp -r -P $node_port $folder_path $node_user@$node_ip:$folder_dest
+        scp -r -P $node_port $folder_path $node_user@$node_ip:/tmp
+	ssh -t -p $node_port $node_user@$node_ip "sudo mv /tmp/$project_name /root/$project_name"
+
         if [ "$?" -ne 0 ]
         then
                 echo -e "\nSCP was not able to send the folder, please try again\n"

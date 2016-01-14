@@ -4,11 +4,13 @@ cd "$(dirname "$0")"
 
 #------------------------------MySQL installation------------------------------------------------
 
-bash ../../0.General/mysql_install
-
 source ../../0.General/pass_file
 
 source ../../0.General/openstack_functions
+
+bash ../../0.General/mysql_install
+
+
 #------------------------------MongoDB Installation------------------------------------------------#
 bash ../../0.General/mongodb_install
 
