@@ -14,7 +14,8 @@ server 3.ca.pool.ntp.org" >> /etc/chrony/chrony.conf
 
 service chrony restart
 
+read -p "Verification for Chrony, press any key to continue:" fake1
+
 chronyc sources
 
-read -p "Verification for Chrony, press any key to continue:" fake1
 

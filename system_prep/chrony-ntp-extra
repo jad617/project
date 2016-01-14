@@ -10,7 +10,7 @@ echo "server controller iburst" >> /etc/chrony/chrony.conf
 
 service chrony restart
 
-chronyc sources
-
 read -p "Verification for Chrony, press any key to continue:" fake1
+
+chronyc sources
 
