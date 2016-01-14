@@ -45,11 +45,12 @@ sed -i "s/TUNNEL_IP/${tunnel_ip}/g" /etc/neutron/plugins/ml2/ml2_conf.ini
 
 sed -i "s/METADATA_SECRET/${metadata_pass}/g" /etc/neutron/metadata_agent.ini
 
+service openvswitch-switch restart
 
+service nova-compute restart
 service openvswitch-switch restart
 service neutron-l3-agent restart
 service neutron-metadata-agent restart
 service neutron-plugin-openvswitch-agent restart
-service nova-compute restart
 
 echo -e "\n Compute networking setup is done. Run the Second Controller Script\n"
