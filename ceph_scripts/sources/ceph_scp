@@ -41,15 +41,17 @@ do
 	do
 
 		echo -e "\nSelect the source file/folder that you want to send:\n"
-        	echo -e "1) ceph.conf\n2) project folder\n3) All\n"
+        	echo -e "1) ceph.conf + admin.keyring\n2) project folder\n3) All\n"
         	read -p "Enter the number: " reponse
 
         	if [ "$reponse" = "1" ]
        		then
 			read -p "The cluster configuration file will be saved to "$folder_path". Press any key to continue" fake
 			sudo scp -P $node_port $folder_path $node_user@$node_ip:/tmp
+			sudo scp -p $node_port $keyring_path $node_user@$node_ip:/tmp
                 	ssh -t -p $node_port $node_user@$node_ip "sudo mkdir /etc/ceph"
 			ssh -t -p $node_port $node_user@$node_ip "sudo mv /tmp/"$cluster_name".conf $folder_path"
+			ssh -t -p $node_port $node_user@$node_ip "sudo mv /tmp/"$cluster_name".client.admin.keyring $keyring_path"
 			loop=false
         	elif [ "$reponse" = "2" ]
        		then
