@@ -1,0 +1,47 @@
+
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+#External Interface
+auto eth0
+iface eth0 inet manual
+up ifconfig  0.0.0.0 up
+up ip link set  promisc on
+down ip link set  promisc off
+down ifconfig  down
+
+auto br-ex
+iface br-ex inet static
+        address 
+        netmask 255.255.255.0
+        gateway 192.168.197.2
+#Management Interface
+auto eth1
+iface eth1 inet static
+        address         10.0.0.32
+        netmask         255.255.255.0
+
+
+#Tunnel Interface
+auto eth1:tun
+iface eth1:tun inet static
+        address         10.0.1.32
+        netmask         255.255.255.0
+
+#VLAN Interface
+auto eth1:vlan
+iface eth1:vlan inet static
+        address         10.10.10.32
+        netmask         255.255.255.0
+#up ifconfig  0.0.0.1 up
+#up ip link set  promisc on
+#down ip link set  promisc off
+#down ifconfig  down
+
+auto br-vlan
+iface br-vlan inet manual
+

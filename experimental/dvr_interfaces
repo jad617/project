@@ -1,0 +1,61 @@
+#! /bin/bash
+
+read -p "What should be the last octet of your IP address?: " $last_addr
+
+
+eth0_addr="$(ifconfig eth0 | grep 'inet addr' | cut -d ':' -f 2 | cut -d ' ' -f 1)"
+
+gateway_addr=$(echo $eth0_addr | cut -d"." -f1-3)".2"
+
+echo $gateway_addr
+
+echo "
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+#External Interface
+auto eth0
+iface eth0 inet manual
+up ifconfig $IFACE 0.0.0.0 up
+up ip link set $IFACE promisc on
+down ip link set $IFACE promisc off
+down ifconfig $IFACE down
+
+auto br-ex
+iface br-ex inet static
+        address $eth0_addr
+        netmask 255.255.255.0
+        gateway $gateway_addr
+
+#Management Interface
+auto eth1
+iface eth1 inet static
+        address         10.0.0.$last_addr
+        netmask         255.255.255.0
+
+
+#Tunnel Interface
+auto eth1:tun
+iface eth1:tun inet static
+        address         10.0.1.$last_addr
+        netmask         255.255.255.0
+
+#VLAN Interface
+auto eth1:vlan
+iface eth1:vlan inet static
+        address         10.10.10.$last_addr
+        netmask         255.255.255.0
+
+#up ifconfig $IFACE 0.0.0.1 up
+#up ip link set $IFACE promisc on
+#down ip link set $IFACE promisc off
+#down ifconfig $IFACE down
+
+auto br-vlan
+iface br-vlan inet manual
+" > test_file
+
