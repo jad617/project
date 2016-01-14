@@ -1,5 +1,17 @@
 #! /bin/bash
 
+#-----------------------------------------------------Setup Open vSwitch-------------------------#
+apt-get install -y openvswitch-switch
+
+ovs-vsctl add-br br-int
+ovs-vsctl add-br br-vlan
+ovs-vsctl add-br br-tun
+ovs-vsctl add-br br-ex
+
+ovs-vsctl add-port br-ex eth0
+
+
+
 #To find the default GATEWAY there are two commands that gives the same result
 # ip route show default | grep "default" | cut -d" " -f3
 # or
@@ -61,4 +73,8 @@ iface eth1:vlan inet static
 auto br-vlan
 iface br-vlan inet manual
 " > test_file
+
+service openvswitch-switch restart
+service networking restart
+reboot
 
