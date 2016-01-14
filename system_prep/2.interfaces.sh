@@ -1,5 +1,10 @@
 #! /bin/bash
 
+#----------------------------------------------Adding some aliases for productivity reasons-----------------------#
+
+echo "alias boss='sudo su -'" >> vim /etc/bash.bashrc
+
+#------------------------------------------------------------------------------------------------------------------#
 interface_file=/etc/network/interfaces
 
 #To find the default GATEWAY there are two commands that gives the same result
