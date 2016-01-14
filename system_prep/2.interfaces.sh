@@ -1,6 +1,6 @@
 #! /bin/bash
 
-interface_file=test_file
+interface_file=/etc/network/interfaces
 
 #To find the default GATEWAY there are two commands that gives the same result
 # ip route show default | grep "default" | cut -d" " -f3
