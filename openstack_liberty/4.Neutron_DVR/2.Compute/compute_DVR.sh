@@ -36,11 +36,11 @@ chown root.neutron /etc/neutron/metadata_agent.ini
 sed -i "s/NEUTRON_PASS/${neutron_user_pass}/g" /etc/nova/nova.conf
 sed -i "s/METADATA_SECRET/${metadata_pass}/g" /etc/nova/nova.conf
 
-sed -i "/RABBIT_PASS/${rabbit_pass}/g" /etc/neutron/neutron.conf
+sed -i "s/RABBIT_PASS/${rabbit_pass}/g" /etc/neutron/neutron.conf
 sed -i "s/NEUTRON_PASS/${neutron_user_pass}/g" /etc/neutron/neutron.conf
 
 
-read -p "What is the IP of your Tunnel Interface" tunnel_ip
+read -p "What is the IP of your Tunnel Interface?: " tunnel_ip
 sed -i "s/TUNNEL_IP/${tunnel_ip}/g" /etc/neutron/plugins/ml2/ml2_conf.ini
 
 sed -i "s/METADATA_SECRET/${metadata_pass}/g" /etc/neutron/metadata_agent.ini
