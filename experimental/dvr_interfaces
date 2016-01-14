@@ -1,13 +1,16 @@
 #! /bin/bash
 
-read -p "What should be the last octet of your IP address?: " $last_addr
+#To find the default GATEWAY there are two commands that gives the same result
+# ip route show default | grep "default" | cut -d" " -f3
+# or
+# netstat -rn | grep ^0.0.0.0 | cut -d" " -f10
+
+read -p "What should be the last octet of your IP address?: " last_addr
 
 
 eth0_addr="$(ifconfig eth0 | grep 'inet addr' | cut -d ':' -f 2 | cut -d ' ' -f 1)"
 
-gateway_addr=$(echo $eth0_addr | cut -d"." -f1-3)".2"
-
-echo $gateway_addr
+gateway_addr=$(ip route show default | grep "default" | cut -d" " -f3)
 
 echo "
 # This file describes the network interfaces available on your system

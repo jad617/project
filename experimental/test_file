@@ -16,27 +16,29 @@ down ifconfig  down
 
 auto br-ex
 iface br-ex inet static
-        address 
+        address 192.168.197.148
         netmask 255.255.255.0
         gateway 192.168.197.2
+
 #Management Interface
 auto eth1
 iface eth1 inet static
-        address         10.0.0.32
+        address         10.0.0.31
         netmask         255.255.255.0
 
 
 #Tunnel Interface
 auto eth1:tun
 iface eth1:tun inet static
-        address         10.0.1.32
+        address         10.0.1.31
         netmask         255.255.255.0
 
 #VLAN Interface
 auto eth1:vlan
 iface eth1:vlan inet static
-        address         10.10.10.32
+        address         10.10.10.31
         netmask         255.255.255.0
+
 #up ifconfig  0.0.0.1 up
 #up ip link set  promisc on
 #down ip link set  promisc off
