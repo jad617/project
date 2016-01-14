@@ -43,8 +43,8 @@ apt-get install -y neutron-server neutron-plugin-openvswitch \
 neutron-plugin-openvswitch-agent neutron-common neutron-dhcp-agent \
 neutron-l3-agent neutron-metadata-agent openvswitch-switch
 
-cp sources/neutron.conf /etc/neutron.conf
-chown root.neutron /etc/neutron.conf
+cp sources/neutron.conf /etc/neutron/neutron.conf
+chown root.neutron /etc/neutron/neutron.conf
 
 cp sources/ml2_conf.ini /etc/neutron/plugins/ml2/ml2_conf.ini
 chown root.neutron /etc/neutron/plugins/ml2/ml2_conf.ini
@@ -73,10 +73,10 @@ sysctl -p
 
 #-------------------------------------------------------------------------------------------#
 
-sed -i "s/NEUTRON_DBPASS/${neutron_DBpass}/g" /etc/neutron.conf
-sed -i "s/RABBIT_PASS/${rabbit_pass}/g" /etc/neutron.conf
-sed -i "s/NEUTRON_PASS/${neutron_user_pass}/g" /etc/neutron.conf
-sed -i "s/NOVA_PASS/${nova_user_pass}/g" /etc/neutron.conf
+sed -i "s/NEUTRON_DBPASS/${neutron_DBpass}/g" /etc/neutron/neutron.conf
+sed -i "s/RABBIT_PASS/${rabbit_pass}/g" /etc/neutron/neutron.conf
+sed -i "s/NEUTRON_PASS/${neutron_user_pass}/g" /etc/neutron/neutron.conf
+sed -i "s/NOVA_PASS/${nova_user_pass}/g" /etc/neutron/neutron.conf
 
 sed -i "s/NEUTRON_PASS/${neutron_user_pass}/g" /etc/neutron/metadata_agent.ini
 sed -i "s/METADATA_SECRET/${metadata_pass}/g" /etc/neutron/metadata_agent.ini
