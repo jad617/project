@@ -1,6 +1,6 @@
 #! /bin/bash
 
-
+interface_file=test_file
 
 #To find the default GATEWAY there are two commands that gives the same result
 # ip route show default | grep "default" | cut -d" " -f3
@@ -62,7 +62,7 @@ iface eth1:vlan inet static
 
 auto br-vlan
 iface br-vlan inet manual
-" > test_file
+" > $interface_file
 
 #-----------------------------------------------------Setup Open vSwitch-------------------------#
 apt-get install -y openvswitch-switch
