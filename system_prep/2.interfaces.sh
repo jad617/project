@@ -4,7 +4,12 @@
 
 echo "alias boss='sudo su -'" >> vim /etc/bash.bashrc
 
-#------------------------------------------------------------------------------------------------------------------#
+#-----------------------------------------------Adding nameservers for resolvconf----------------------------------#
+
+echo "nameserver 8.8.8.8" >> /etc/resolvconf/resolv.conf.d/base
+resolvconf -u
+
+#-----------------------------------------------Configuring the Interfaces-----------------------------------------#
 interface_file=/etc/network/interfaces
 
 #To find the default GATEWAY there are two commands that gives the same result
@@ -85,6 +90,8 @@ ovs-vsctl add-br br-ex
 ovs-vsctl add-port br-ex eth0           #For external access
 ovs-vsctl add-port br-vlan eth1:vlan	#For Vlan access
 
+#We will disable the sleep options in /etc/init/failsafe.conf because, with our network configuration, it will give a false positive and hang for more than 2 minutes
+sed -i "s/sleep/#sleep/g" /etc/init/failsafe.conf
 
 #We now restart the Open vSwitch service and reboot
 service openvswitch-switch restart
