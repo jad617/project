@@ -2,16 +2,13 @@
 
 cd "$(dirname "$0")"
 
+source pass_file
+
 apt-get -y install mariadb-server python-pymysql
 
 cp sources/mysqld_openstack.cnf /etc/mysql/conf.d/mysqld_openstack.cnf
 chown root.root /etc/mysql/conf.d/mysqld_openstack.cnf
 
-echo -e "\n"
-read -p "What is the IP of the Controller?: " controller_ip
-echo -e "\n"
-
-echo -e "#CONTROLLER_IP:\nexport controller_ip=${controller_ip} \n" >> pass_file
 
 sed -i "s/BIND_ADDRESS/$controller_ip/g" /etc/mysql/conf.d/mysqld_openstack.cnf
 
@@ -19,13 +16,6 @@ service mysql restart
 
 
 mysql_secure_installation
-
-#We take the MySQL password so we can use it for the "openstack_functions"
-echo -e "\n"
-read -s -p "What is the root password for MySQL?: " mysql_pass
-echo -e "\n"
-
-echo -e "#MySQL:\nmysql_pass=$mysql_pass\n" >> pass_file
 
 echo -e "\nMaria DB Installed\n"
 

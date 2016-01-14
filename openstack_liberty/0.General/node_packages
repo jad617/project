@@ -5,10 +5,10 @@ cd "$(dirname "$0")"
 
 apt-get update && apt-get upgrade -y
 
-apt-get install software-properties-common
+apt-get install -y software-properties-common
 add-apt-repository cloud-archive:liberty
-apt-get update && apt-get dist-upgrade
-apt-get install python-openstackclient
+apt-get update && apt-get dist-upgrade -y
+apt-get install -y python-openstackclient
 
 reboot
 
