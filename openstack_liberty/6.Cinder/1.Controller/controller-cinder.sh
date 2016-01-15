@@ -51,17 +51,33 @@ openstack endpoint create --region RegionOne \
 openstack endpoint create --region RegionOne \
   volumev2 admin http://controller:8776/v2/%\(tenant_id\)s
 
-#-----------------------------------------------------------------------Cinder Installation------------------------------------------
+#-----------------------------------------------------------------------Cinder-API Installation------------------------------------------
 
 apt-get install cinder-api cinder-scheduler python-cinderclient
 
+cp sources/cinder.conf /etc/cinder/cinder.conf
+chown cinder.cinder /etc/cinder/cinder.conf
 
 
+sed -i "s/CINDER_DBPASS/$cinder_DBpass/g" /etc/cinder/cinder.conf
+sed -i "s/RABBIT_PASS/$rabbit_pass/g" /etc/cinder/cinder.conf
+sed -i "s/CINDER_PASS/$cinder_user_pass/g" /etc/cinder/cinder.conf
+
+sed -i "s/MY_IP/$controller_ip/g" /etc/cinder/cinder.conf
+
+su -s /bin/sh -c "cinder-manage db sync" cinder
 
 
+service nova-api restart
+service cinder-scheduler restart
+service cinder-api restart
+
+rm -f /var/lib/cinder/cinder.sqlite
 
 
+#----------------------------------------------------------------------Cinder-Volume Installation----------------------------------------------
 
+apt-get install cinder-volume python-mysqldb
 
 
 
