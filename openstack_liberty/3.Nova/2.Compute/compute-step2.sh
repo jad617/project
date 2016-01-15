@@ -21,15 +21,14 @@ sed -i "s/MY_IP/$compute_ip/g" /etc/nova/nova.conf
 
 sed -i "s/NOVA_PASS/${nova_user_pass}/g" /etc/nova/nova.conf
 sed -i "s/RABBIT_PASS/${rabbit_pass}/g" /etc/nova/nova.conf
-sed -i "s/CLUSTER_NAME/${cluster_name}/g" /etc/nova/nova.conf
-sed -i "s/SECRET_UUID/$secret_uuid/g" /etc/nova/nova.conf
 
 service nova-compute restart
 
 rm -f /var/lib/nova/nova.sqlite
 #------------------------------Ceph Storage Setup-----------------------------
 ceph auth get-or-create client.cinder mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=volumes, allow rwx pool=vms, allow rx pool=images'
-ceph auth get-or-create client.cinder | tee /etc/ceph/ceph.client.cinder.keyring
+ceph auth get-or-create client.cinder | tee /etc/ceph/${cluster_name}.client.cinder.keyring
+chown cinder:cinder /etc/ceph/${cluster_name}.client.cinder.keyring
 
 ceph auth get-key client.cinder | tee client.cinder.key
 
@@ -53,6 +52,9 @@ echo "
     log file = /var/log/qemu/qemu-guest-$pid.log
     rbd concurrent management ops = 20
 " >> /etc/ceph/${cluster_name}.conf
+
+sed -i "s/CLUSTER_NAME/${cluster_name}/g" /etc/nova/nova.conf
+sed -i "s/SECRET_UUID/$secret_uuid/g" /etc/nova/nova.conf
 
 mkdir -p /var/run/ceph/guests/ /var/log/qemu/
 chown libvirt-qemu:libvirtd /var/run/ceph/guests /var/log/qemu/

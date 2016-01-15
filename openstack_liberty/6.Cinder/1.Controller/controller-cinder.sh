@@ -84,6 +84,15 @@ service cinder-volume restart
 
 rm -f /var/lib/cinder/cinder.sqlite
 
+#-----------------------------------------------------------------------Ceph Storage Config------------------------------------------------
+
+ceph auth get-or-create client.cinder | tee /etc/ceph/${cluster_name}.client.cinder.keyring
+chown cinder:cinder /etc/ceph/${cluster_name}.client.cinder.keyring
+
+sed -i "s/CLUSTER_NAME/$cluster_name/g" /etc/cinder/cinder.conf 
+sed -i "s/SECRET_UUID/$secret_uuid/g" /etc/cinder/cinder.conf 
+
+service cinder-volume restart
 #------------------------------------------------------------------------Verify Operations-----------------------------------------------------
 
 source /root/admin-openrc.sh
