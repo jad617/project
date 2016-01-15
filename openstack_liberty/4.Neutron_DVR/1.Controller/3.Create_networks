@@ -1,0 +1,56 @@
+#! /bin/bash
+
+######
+
+source /root/admin-openrc.sh
+
+#Create the external network:
+neutron net-create ext-net --router:external \
+  --provider:physical_network external --provider:network_type flat
+
+
+#Create a subnet on the external network:
+neutron subnet-create ext-net 192.168.197.0/24 --allocation-pool \
+  start=192.168.197.180,end=192.168.197.200 --disable-dhcp \
+  --gateway 192.168.197.2 --name ext-subnet
+
+#Obtain the ID of a regular project. For example, using the demo project
+demo_tenant_id=$(openstack project show demo | grep "id" | egrep -v "domain|parent" | awk '{print $4}')
+
+#Create the project network
+neutron net-create demo-net --tenant-id $demo_tenant_id \
+  --provider:network_type vxlan
+
+source /root/demo-openrc.sh
+
+#Create a subnet on the demo network:
+neutron subnet-create demo-net --name demo-subnet --gateway 192.168.1.1 \
+  192.168.1.0/24
+
+
+
+#Create a distributed project router:
+neutron router-create demo-router
+
+#Attach the project network to the router
+neutron router-interface-add demo-router demo-subnet
+
+#Add a gateway to the external network for the project network on the router
+neutron router-gateway-set demo-router ext-net
+
+
+#-----------Verify Network
+read -p "We are now going do some verification" fake
+
+ip netns
+
+source /root/admin-openrc.sh
+
+#Determine the external network gateway IP address for the project network on the router, typically the lowest IP address in the external subnet IP allocation range
+neutron router-port-list demo-router
+
+
+
+
+
+
