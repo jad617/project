@@ -80,15 +80,12 @@ rm -f /var/lib/cinder/cinder.sqlite
 apt-get install cinder-volume python-mysqldb
 
 
+service cinder-volume restart
 
+rm -f /var/lib/cinder/cinder.sqlite
 
+#------------------------------------------------------------------------Verify Operations-----------------------------------------------------
 
+source /root/admin-openrc.sh
 
-
-
-
-
-
-
-
-
+cinder service-list
