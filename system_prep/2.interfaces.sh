@@ -2,7 +2,7 @@
 
 #----------------------------------------------Adding some aliases for productivity reasons-----------------------#
 
-echo "alias boss='sudo su -'" >> vim /etc/bash.bashrc
+echo "alias boss='sudo su -'" >> /etc/bash.bashrc
 
 #-----------------------------------------------Adding nameservers for resolvconf----------------------------------#
 
