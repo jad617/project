@@ -81,6 +81,7 @@ sed -i "s/NOVA_PASS/${nova_user_pass}/g" /etc/neutron/neutron.conf
 sed -i "s/NEUTRON_PASS/${neutron_user_pass}/g" /etc/neutron/metadata_agent.ini
 sed -i "s/METADATA_SECRET/${metadata_pass}/g" /etc/neutron/metadata_agent.ini
 
+sed -i "s/NEUTRON_PASS/${neutron_user_pass}/g" /etc/nova/nova.conf
 sed -i "s/METADATA_SECRET/${metadata_pass}/g" /etc/nova/nova.conf
 #INsert SSH to send to compute
 
