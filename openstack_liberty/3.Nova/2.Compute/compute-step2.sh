@@ -44,20 +44,26 @@ EOF
 sudo virsh secret-define --file secret.xml
 sudo virsh secret-set-value --secret ${secret_uuid} --base64 $(cat client.cinder.key) && rm client.cinder.key secret.xml
 
-echo "
+echo '
 [client]
     rbd cache = true
     rbd cache writethrough until flush = true
     admin socket = /var/run/ceph/guests/$cluster-$type.$id.$pid.$cctid.asok
     log file = /var/log/qemu/qemu-guest-$pid.log
     rbd concurrent management ops = 20
-" >> /etc/ceph/${cluster_name}.conf
+' >> /etc/ceph/${cluster_name}.conf
 
 sed -i "s/CLUSTER_NAME/${cluster_name}/g" /etc/nova/nova.conf
 sed -i "s/SECRET_UUID/$secret_uuid/g" /etc/nova/nova.conf
 
 mkdir -p /var/run/ceph/guests/ /var/log/qemu/
 chown libvirt-qemu:libvirtd /var/run/ceph/guests /var/log/qemu/
+
+mkdir_ceph_guests="mkdir -p /var/run/ceph/guests/ /var/log/qemu/"
+sudo sed -i "11 a $mkdir_ceph_guests" /etc/rc.local
+
+chown_ceph_guests="chown libvirt-qemu:libvirtd /var/run/ceph/guests /var/log/qemu/"
+sudo sed -i "12 a $chown_ceph_guests" /etc/rc.local
 
 #-----------------------------------------------------------------------------
 
