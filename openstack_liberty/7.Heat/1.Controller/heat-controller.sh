@@ -74,14 +74,32 @@ openstack role create heat_stack_user
 apt-get install heat-api heat-api-cfn heat-engine \
   python-heatclient
 
+cp sources/heat.conf /etc/heat/heat.conf
+chown heat.heat /etc/heat/heat.conf
+
+sed -i "s/RABBIT_PASS/${rabbit_pass}/g" /etc/heat/heat.conf
+
+sed -i "s/HEAT_PASS/${heat_user_pass}/g" /etc/heat/heat.conf
+sed -i "s/HEAT_DBPASS/${heat_DBpass}/g" /etc/heat/heat.conf
+sed -i "s/HEAT_DOMAIN_PASS/${heat_domain_pass}/g" /etc/heat/heat.conf
+
+#Populate the Orchestration database:
+su -s /bin/sh -c "heat-manage db_sync" heat
+
+service heat-api restart
+service heat-api-cfn restart
+service heat-engine restart
+
+rm -f /var/lib/heat/heat.sqlite
+
+#---------------------------------------------Verification----------------------------------------
+
+read -p "Press any key to start the Heat verifiaction process" fake
+
+source /root/admin-openrc.sh
 
 
-
-
-
-
-
-
+heat service-list
 
 
 
