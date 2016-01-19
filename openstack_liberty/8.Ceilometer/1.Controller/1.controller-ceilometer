@@ -65,9 +65,8 @@ service ceilometer-alarm-evaluator restart
 service ceilometer-alarm-notifier restart
 
 
-echo -e "\nFirst step of Ceilometer installation is done\nWe now proceed with the Glance configuration\n"
+echo -e "\nFirst step of Ceilometer installation is done\nWe now proceed with the Compute configuration\n"
 
-#--------------------------------------Ceilometer for Glance--------------------------------------
 
 
 
