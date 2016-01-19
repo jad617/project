@@ -28,7 +28,7 @@ rm -f /var/lib/nova/nova.sqlite
 #------------------------------Ceph Storage Setup-----------------------------
 ceph auth get-or-create client.cinder mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=volumes, allow rwx pool=vms, allow rx pool=images'
 ceph auth get-or-create client.cinder | tee /etc/ceph/${cluster_name}.client.cinder.keyring
-chown cinder:cinder /etc/ceph/${cluster_name}.client.cinder.keyring
+chown nova.nova /etc/ceph/${cluster_name}.client.cinder.keyring
 
 ceph auth get-key client.cinder | tee client.cinder.key
 
