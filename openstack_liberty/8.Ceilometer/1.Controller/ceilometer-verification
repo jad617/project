@@ -1,0 +1,21 @@
+#! /bin/bash
+
+source /root/admin-openrc.sh
+
+#List available meters
+ceilometer meter-list
+
+#Download the CirrOS image from the Image service:
+IMAGE_ID=$(glance image-list | grep 'cirros' | awk '{ print $2 }')
+glance image-download $IMAGE_ID > /tmp/cirros.img
+
+#List available meters again to validate detection of the image download:
+ceilometer meter-list
+
+#Retrieve usage statistics from the image.download meter
+ceilometer statistics -m image.download -p 60
+
+#Remove the previously downloaded image file /tmp/cirros.img:
+rm /tmp/cirros.img
+
+echo -e "\nCeilometer Verification completed!!!\n"
