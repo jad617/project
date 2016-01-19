@@ -71,7 +71,7 @@ openstack role create heat_stack_user
 
 #--------------------------------------------------Install and configure Heat---------------------------------
 
-apt-get install heat-api heat-api-cfn heat-engine \
+apt-get install -y heat-api heat-api-cfn heat-engine \
   python-heatclient
 
 cp sources/heat.conf /etc/heat/heat.conf
