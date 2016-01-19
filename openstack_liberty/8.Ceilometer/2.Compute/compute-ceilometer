@@ -1,3 +1,27 @@
 #! /bin/bash
 
-apt-get install ceilometer-agent-compute
+cd "$(dirname "$0")"
+
+source ../../0.General/pass_file
+
+source ../../../ceph_scripts/export_file
+
+source ../../0.General/openstack_functions
+
+source ../../0.General/ceph_openstack_functions
+
+#------------------------------------------------------------Compute Ceilometer installation
+
+apt-get install -y ceilometer-agent-compute
+
+cp sources/ceilometer.conf /etc/ceilometer/ceilometer.conf
+chown ceilometer.ceilometer /etc/ceilometer/ceilometer.conf
+
+sed -i "s/RABBIT_PASS/$rabbit_pass/g" /etc/ceilometer/ceilometer.conf
+sed -i "s/CEILOMETER_PASS/$ceilometer_user_pass" /etc/ceilometer/ceilometer.conf
+
+
+service ceilometer-agent-compute restart
+service nova-compute restart
+
+
