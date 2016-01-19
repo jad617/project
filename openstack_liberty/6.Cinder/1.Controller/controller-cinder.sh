@@ -58,9 +58,7 @@ apt-get install -y cinder-api cinder-scheduler python-cinderclient
 cp sources/cinder.conf /etc/cinder/cinder.conf
 chown cinder.cinder /etc/cinder/cinder.conf
 
-cpu_cores=$(lscpu | grep "^CPU(s):" | awk '{ print $2 }')
 
-sed -i "s/CPU/$cpu_cores/g" /etc/cinder/cinder.conf
 sed -i "s/CINDER_DBPASS/$cinder_DBpass/g" /etc/cinder/cinder.conf
 sed -i "s/RABBIT_PASS/$rabbit_pass/g" /etc/cinder/cinder.conf
 sed -i "s/CINDER_PASS/$cinder_user_pass/g" /etc/cinder/cinder.conf
