@@ -30,19 +30,25 @@ ceph auth get-or-create client.cinder mon 'allow r' osd 'allow class-read object
 ceph auth get-or-create client.cinder | tee /etc/ceph/${cluster_name}.client.cinder.keyring
 chown nova.nova /etc/ceph/${cluster_name}.client.cinder.keyring
 
-ceph auth get-key client.cinder | tee client.cinder.key
+#ceph auth get-key client.cinder | tee client.cinder.key
 
+#############################TEST 
+ceph auth get-or-create client.nova mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=volumes, allow rwx pool=vms, allow rx pool=images'
+ceph auth get-or-create client.nova | tee /etc/ceph/${cluster_name}.client.nova.keyring
+chown nova.nova /etc/ceph/${cluster_name}.client.nova.keyring
+ceph auth get-key client.nova | tee client.nova.key
+###################
 cat > secret.xml <<EOF
 <secret ephemeral='no' private='no'>
   <uuid>${secret_uuid}</uuid>
   <usage type='ceph'>
-    <name>client.cinder secret</name>
+    <name>client.nova secret</name>
   </usage>
 </secret>
 EOF
 
 sudo virsh secret-define --file secret.xml
-sudo virsh secret-set-value --secret ${secret_uuid} --base64 $(cat client.cinder.key) && rm client.cinder.key secret.xml
+sudo virsh secret-set-value --secret ${secret_uuid} --base64 $(cat client.nova.key) && rm client.nova.key secret.xml
 
 echo '
 [client]
