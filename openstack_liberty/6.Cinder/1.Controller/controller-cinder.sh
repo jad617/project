@@ -53,7 +53,7 @@ openstack endpoint create --region RegionOne \
 
 #-----------------------------------------------------------------------Cinder-API Installation------------------------------------------
 
-apt-get install cinder-api cinder-scheduler python-cinderclient
+apt-get install -y cinder-api cinder-scheduler python-cinderclient
 
 cp sources/cinder.conf /etc/cinder/cinder.conf
 chown cinder.cinder /etc/cinder/cinder.conf
@@ -79,7 +79,7 @@ rm -f /var/lib/cinder/cinder.sqlite
 
 #----------------------------------------------------------------------Cinder-Volume Installation----------------------------------------------
 
-apt-get install cinder-volume python-mysqldb
+apt-get install -y cinder-volume python-mysqldb
 
 
 service cinder-volume restart
