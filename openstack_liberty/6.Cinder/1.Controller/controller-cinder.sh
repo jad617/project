@@ -89,11 +89,6 @@ rm -f /var/lib/cinder/cinder.sqlite
 ceph auth get-or-create client.cinder | tee /etc/ceph/${cluster_name}.client.cinder.keyring
 chown cinder:cinder /etc/ceph/${cluster_name}.client.cinder.keyring
 
-#####TEST EXPERIMENTAL
-ceph auth get-or-create client.nova | tee /etc/ceph/${cluster_name}.client.nova.keyring
-chown nova:nova /etc/ceph/${cluster_name}.client.nova.keyring
-######################
-
 sed -i "s/CLUSTER_NAME/$cluster_name/g" /etc/cinder/cinder.conf 
 sed -i "s/SECRET_UUID/$secret_uuid/g" /etc/cinder/cinder.conf 
 
