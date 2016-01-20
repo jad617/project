@@ -9,6 +9,9 @@ echo "alias boss='sudo su -'" >> /etc/bash.bashrc
 echo "nameserver 8.8.8.8" >> /etc/resolvconf/resolv.conf.d/base
 resolvconf -u
 
+#------------------------------------------------Configuring /etc/hosts--------------------------------------------#
+bash sources/hosts.sh
+
 #-----------------------------------------------Configuring the Interfaces-----------------------------------------#
 interface_file=/etc/network/interfaces
 
