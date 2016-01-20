@@ -12,11 +12,11 @@ source ../../0.General/ceph_openstack_functions
 
 #-----------------------------------------------Ceilometer DB with MongoDB-----------------------------------------
 
-mongo --host controller --eval " \
+mongo --host controller --eval ' \
   db = db.getSiblingDB("ceilometer"); \
   db.addUser({user: "ceilometer", \
-  pwd: "${ceilometer_DBpass}", \
-  roles: [ "readWrite", "dbAdmin" ]})"
+  pwd: "MONGO_DB", \
+  roles: [ "readWrite", "dbAdmin" ]})'
 
 #----------------------------------------------Ceilometer Configuration--------------------------------------------
 source /root/admin-openrc.sh
