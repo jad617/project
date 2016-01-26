@@ -9,8 +9,6 @@ echo "alias boss='sudo su -'" >> /etc/bash.bashrc
 echo "nameserver 8.8.8.8" >> /etc/resolvconf/resolv.conf.d/base
 resolvconf -u
 
-#------------------------------------------------Configuring /etc/hosts--------------------------------------------#
-bash sources/hosts.sh
 
 #-----------------------------------------------Configuring the Interfaces-----------------------------------------#
 interface_file=/etc/network/interfaces
@@ -77,7 +75,12 @@ auto br-vlan
 iface br-vlan inet manual
 " > $interface_file
 
+
+#------------------------------------------------Configuring /etc/hosts--------------------------------------------#
+bash sources/hosts.sh
+
 #-----------------------------------------------------Setup Open vSwitch-------------------------#
+apt-get update 
 apt-get install -y openvswitch-switch
 
 #In order for Open vSwitch to view the new Interfaces we need to reload the network configs
