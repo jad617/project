@@ -11,7 +11,6 @@ eth1_addr="$(ifconfig eth1 | grep 'inet addr' | cut -d ':' -f 2 | cut -d ' ' -f 
 eth0_addr="$(ifconfig eth0 | grep 'inet addr' | cut -d ':' -f 2 | cut -d ' ' -f 1)"
 
 echo "127.0.0.1 localhost" > $host_file
-echo "$eth1_addr	$HOSTNAME" >> $host_file
 echo "$eth0_addr	$HOSTNAME" >> $host_file
 
 
