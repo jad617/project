@@ -75,10 +75,6 @@ auto br-vlan
 iface br-vlan inet manual
 " > $interface_file
 
-
-#------------------------------------------------Configuring /etc/hosts--------------------------------------------#
-bash sources/hosts.sh
-
 #-----------------------------------------------------Setup Open vSwitch-------------------------#
 apt-get update 
 apt-get install -y openvswitch-switch
