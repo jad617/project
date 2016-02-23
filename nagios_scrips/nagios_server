@@ -1,0 +1,40 @@
+#! /bin/bash
+
+#-------------------------------------Nagios Installation-------------------
+apt-get update && apt-get upgrade -y
+apt-get install -y --force-yes nagios3 nagios-plugins
+
+cp sources/nagios.cfg /etc/nagios3/nagios.cfg
+
+
+#---------------------------Reconfiguring the folders layout----------------
+mkdir -p /etc/nagios3/openstack/{commands,templates,controllers,computes,misc}
+
+cd /etc/nagios3/conf.d/
+mkdir ORIG
+
+cp generic-service_nagios2.cfg ../openstack/generic-service-templates.cfg
+mv generic-service_nagios2.cfg ORIG/generic-service.cfg.ORIG
+
+cp hostgroups_nagios2.cfg ../openstack/hostgroups.cfg
+mv hostgroups_nagios2.cfg ORIG/hostgroups.cfg.ORIG
+
+cp generic-host_nagios2.cfg ../openstack/generic-host-templates.cfg
+mv generic-host_nagios2.cfg ORIG/generic-host_nagios2.cfg.ORIG
+
+cp contacts_nagios2.cfg contacts.cfg
+mv contacts_nagios2.cfg ORIG/contacts.cfg.ORIG
+
+cp extinfo_nagios2.cfg extinfo.cfg
+mv extinfo_nagios2.cfg ORIG/extinfo.cfg.ORIG
+
+cp timeperiods_nagios2.cfg timeperiods.cfg
+mv timeperiods_nagios2.cfg ORIG/timeperiods.cfg.ORIG
+
+cp services_nagios2.cfg services.cfg
+mv services_nagios2.cfg ORIG/services.cfg.ORIG
+
+cp localhost_nagios2.cfg localhost.cfg
+mv localhost_nagios2.cfg ORIG/localhost.cfg.ORIG
+
+#---------------------------Host Definition---------------------------
