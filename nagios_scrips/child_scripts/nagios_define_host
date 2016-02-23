@@ -1,0 +1,83 @@
+#! /bin/bash
+
+#-----------------------------------We create the functions to be used in this script------------------
+f_controller_host()
+{
+read -p "How many Controller host(s) do you want to add?: " controller_host
+a=0
+while [ "$a" -lt "$controller_host" ]
+do
+	read -p "What is the Hostname of your controller?: " controller_hostname
+	read -p "What is the Public IP address of your controller?: " controller_ip
+	echo "define host {
+	use             linux_server_template
+
+	host_name       $controller_hostname
+	alias           $controller_hostname
+	address         $controller_ip
+  
+	}
+	" > /etc/nagios3/openstack/controllers/${controller_hostname}.cfg
+                    
+	(( a++ ))
+
+done
+}
+
+f_compute_host()
+{
+read -p "How many Compute host(s) do you want to add?: " compute_host
+b=0
+while [ "$b" -lt "$compute_host" ]
+do
+	read -p "What is the Hostname of your compute?: " compute_hostname
+	read -p "What is the Public IP address of your compute?: " compute_ip
+	echo "define host {
+	use             linux_server_template
+	
+	host_name       $compute_hostname
+	alias           $compute_hostname
+	address         $compute_ip
+       
+	}
+	" > /etc/nagios3/openstack/computes/${compute_hostname}.cfg
+
+	(( b++ ))
+done 
+
+}
+
+#------------------We use the functions in order to create the Define Host File-------------------
+
+loop=true
+while [ "$loop" = true ]
+do
+	echo -e "\nSelect the appropriate host(s) to add\n"
+	echo -e "1)Controller host(s)\n2)Compute host(s)\n3)Both host types\n"
+	read -p "Enter the number: " number
+	
+	if [ "$number" = "1" ]
+	then
+		f_controller_host
+		loop=false
+	elif [ "$number" = "2" ]
+	then
+		f_compute_host
+		loop=false
+	elif  [ "$number" = "3" ]
+	then
+		f_controller_host
+		f_compute_host
+		loop=false	
+	else
+		read -p "You have not entered a correct number. Press any key to reload menu " fake
+		loop=true
+	fi
+
+done
+
+
+
+
+
+
