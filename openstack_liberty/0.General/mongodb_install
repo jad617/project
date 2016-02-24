@@ -4,11 +4,12 @@ cd "$(dirname "$0")"
 
 source pass_file
 
+apt-get update
+apt-get install -y mongodb-server mongodb-clients python-pymongo
+
 cp sources/mongodb.conf /etc/mongodb.conf
 chown root.root /etc/mongodb.conf
 
-apt-get update
-apt-get install -y mongodb-server mongodb-clients python-pymongo
 
 sed -i "s/BIND_IP/${controller_ip}/g" /etc/mongodb.conf
 
