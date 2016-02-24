@@ -1,5 +1,7 @@
 #! /bin/bash
 
+cd "$(dirname "$0")"
+
 #-----------------------------------We create the functions to be used in this script------------------
 f_controller_host()
 {
@@ -18,7 +20,9 @@ do
   
 	}
 	" > /etc/nagios3/openstack/controllers/${controller_hostname}.cfg
-                    
+	
+	echo -e "\n$controller_hostname\n" >> ../sources/variables
+	                    
 	(( a++ ))
 
 done
@@ -41,7 +45,9 @@ do
        
 	}
 	" > /etc/nagios3/openstack/computes/${compute_hostname}.cfg
-
+	
+	echo -e "\n$compute_hostname\n" >> ../sources/variables
+	
 	(( b++ ))
 done 
 
