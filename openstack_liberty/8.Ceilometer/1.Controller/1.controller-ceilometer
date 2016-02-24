@@ -11,11 +11,10 @@ source ../../0.General/openstack_functions
 source ../../0.General/ceph_openstack_functions
 
 #-----------------------------------------------Ceilometer DB with MongoDB-----------------------------------------
-
-mongo --host controller --eval ' \
-  db = db.getSiblingDB("ceilometer"); \
-  db.addUser({user: "ceilometer", \
-  pwd: "MONGO_DB", \
+mongo --host controller --eval '
+  db = db.getSiblingDB("ceilometer");
+  db.addUser({user: "ceilometer",
+  pwd: "MONGO_DB",
   roles: [ "readWrite", "dbAdmin" ]})'
 
 #----------------------------------------------Ceilometer Configuration--------------------------------------------
