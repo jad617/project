@@ -18,7 +18,7 @@ cp sources/ceilometer.conf /etc/ceilometer/ceilometer.conf
 chown ceilometer.ceilometer /etc/ceilometer/ceilometer.conf
 
 sed -i "s/RABBIT_PASS/$rabbit_pass/g" /etc/ceilometer/ceilometer.conf
-sed -i "s/CEILOMETER_PASS/$ceilometer_user_pass" /etc/ceilometer/ceilometer.conf
+sed -i "s/CEILOMETER_PASS/$ceilometer_user_pass/g" /etc/ceilometer/ceilometer.conf
 
 
 service ceilometer-agent-compute restart
