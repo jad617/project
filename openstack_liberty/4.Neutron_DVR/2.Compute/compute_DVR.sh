@@ -45,6 +45,8 @@ sed -i "s/TUNNEL_IP/${tunnel_ip}/g" /etc/neutron/plugins/ml2/ml2_conf.ini
 
 sed -i "s/METADATA_SECRET/${metadata_pass}/g" /etc/neutron/metadata_agent.ini
 
+rm -f /var/lib/neutron/neutron.sqlite
+
 service openvswitch-switch restart
 
 service nova-compute restart
