@@ -17,7 +17,7 @@ cp sources/nagios.cfg /etc/nagios3/nagios.cfg
 cp sources/generic-network-service.cfg /etc/nagios3/openstack/templates/  
 cp sources/generic-passive-service.cfg /etc/nagios3/openstack/templates/
 cp sources/linux_server_template.cfg /etc/nagios3/openstack/templates/
-
+cp sources/services.cfg /etc/nagios3/conf.d/services.cfg
 cd /etc/nagios3/conf.d/
 mkdir ORIG
 
