@@ -18,6 +18,7 @@ cp sources/generic-network-service.cfg /etc/nagios3/openstack/templates/
 cp sources/generic-passive-service.cfg /etc/nagios3/openstack/templates/
 cp sources/linux_server_template.cfg /etc/nagios3/openstack/templates/
 cp sources/services.cfg /etc/nagios3/conf.d/services.cfg
+cp sources/hostgroups.cfg /etc/nagios3/openstack/hostgroups.cfg
 
 cd /etc/nagios3/conf.d/
 mkdir ORIG
@@ -25,7 +26,6 @@ mkdir ORIG
 cp generic-service_nagios2.cfg ../openstack/generic-service-templates.cfg
 mv generic-service_nagios2.cfg ORIG/generic-service.cfg.ORIG
 
-cp hostgroups_nagios2.cfg ../openstack/hostgroups.cfg
 mv hostgroups_nagios2.cfg ORIG/hostgroups.cfg.ORIG
 
 cp generic-host_nagios2.cfg ../openstack/generic-host-templates.cfg
