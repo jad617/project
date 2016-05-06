@@ -6,6 +6,10 @@ cd "$(dirname "$0")"
 apt-get update && apt-get upgrade -y
 apt-get install -y --force-yes nagios3 nagios-plugins
 
+usermod -a -G nagios www-data
+chmod -R +x /var/lib/nagios3/
+
+
 #---------------------------Reconfiguring the folders layout----------------
 mkdir -p /etc/nagios3/openstack/{commands,templates,controllers,computes,misc}
 
@@ -47,3 +51,6 @@ mv localhost_nagios2.cfg ORIG/localhost.cfg.ORIG
 cd ~/project/nagios_scrips
 
 bash child_scripts/nagios_define_host 
+
+service nagios3 restart
+service apache2 restart
