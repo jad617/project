@@ -19,8 +19,9 @@ do
 	address         $controller_ip
   
 	}
-	" > /etc/nagios3/openstack/controllers/${controller_hostname}.cfg
-	
+	" > /etc/nagios3/openstack/controllers/${controller_hostname}.cfg ####thinking about only making host.cfg
+									  #that will containt all the controllers
+									 #will do the same fore computes
 	echo -e "\n$controller_hostname\n" >> ../sources/variables
 	                    
 	(( a++ ))
