@@ -45,6 +45,8 @@ mv services_nagios2.cfg ORIG/services.cfg.ORIG
 cp localhost_nagios2.cfg localhost.cfg
 mv localhost_nagios2.cfg ORIG/localhost.cfg.ORIG
 
+rm -rf /etc/nagios3/conf.d/extinfo.cfg
+
 #---------------------------Host Definition---------------------------
 #This will add the Controller Hosts and Compute Hosts
 
