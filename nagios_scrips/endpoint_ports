@@ -1,0 +1,12 @@
+###Keystone
+
+auth_uri = http://controller:5000  ---> user
+auth_url = http://controller:35357 ---> admin
+
+
+[neutron]
+
+
+url = http://controller:9696
+auth_url = http://controller:35357
+
