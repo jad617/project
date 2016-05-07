@@ -27,12 +27,12 @@ cp sources/commands.cfg /etc/nagios3/openstack/conf.d/commands.cfg
 cd /etc/nagios3/conf.d/
 mkdir ORIG
 
-cp generic-service_nagios2.cfg ../openstack/generic-service-templates.cfg
+cp generic-service_nagios2.cfg ../openstack/templates/generic-service-templates.cfg
 mv generic-service_nagios2.cfg ORIG/generic-service.cfg.ORIG
 
 mv hostgroups_nagios2.cfg ORIG/hostgroups.cfg.ORIG
 
-cp generic-host_nagios2.cfg ../openstack/generic-host-templates.cfg
+cp generic-host_nagios2.cfg ../openstack/templates/generic-host-templates.cfg
 mv generic-host_nagios2.cfg ORIG/generic-host_nagios2.cfg.ORIG
 
 cp contacts_nagios2.cfg ../openstack/conf.d/contacts.cfg
