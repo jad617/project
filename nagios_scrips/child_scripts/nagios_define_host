@@ -19,7 +19,7 @@ do
 	address         $controller_ip
   
 	}
-	" > /etc/nagios3/openstack/controllers/${controller_hostname}.cfg ####thinking about only making host.cfg
+	" > /etc/nagios3/openstack/hosts/controllers/${controller_hostname}.cfg ####thinking about only making host.cfg
 									  #that will containt all the controllers
 									 #will do the same fore computes
 	echo -e "\n$controller_hostname\n" >> ../sources/variables
@@ -45,7 +45,7 @@ do
 	address         $compute_ip
        
 	}
-	" > /etc/nagios3/openstack/computes/${compute_hostname}.cfg
+	" > /etc/nagios3/openstack/hosts/computes/${compute_hostname}.cfg
 	
 	echo -e "\n$compute_hostname\n" >> ../sources/variables
 	
