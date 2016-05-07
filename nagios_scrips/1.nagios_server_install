@@ -11,14 +11,18 @@ chmod -R +x /var/lib/nagios3/
 
 
 #---------------------------Reconfiguring the folders layout----------------
-mkdir -p /etc/nagios3/openstack/{commands,templates,controllers,computes,misc}
+mkdir -p /etc/nagios3/openstack/{conf.d,templates,hosts,misc}
+mkdir -p /etc/nagios3/openstack/hosts/{controllers,computes}
 
 cp sources/nagios.cfg /etc/nagios3/nagios.cfg
 cp sources/generic-network-service.cfg /etc/nagios3/openstack/templates/  
 cp sources/generic-passive-service.cfg /etc/nagios3/openstack/templates/
 cp sources/linux_server_template.cfg /etc/nagios3/openstack/templates/
-cp sources/services.cfg /etc/nagios3/conf.d/services.cfg
-cp sources/hostgroups.cfg /etc/nagios3/openstack/hostgroups.cfg
+
+cp sources/services.cfg /etc/nagios3/openstack/conf.d/services.cfg
+cp sources/hostgroups.cfg /etc/nagios3/openstack/conf.d/hostgroups.cfg
+cp sources/commands.cfg /etc/nagios3/openstack/conf.d/commands.cfg
+
 
 cd /etc/nagios3/conf.d/
 mkdir ORIG
@@ -31,7 +35,7 @@ mv hostgroups_nagios2.cfg ORIG/hostgroups.cfg.ORIG
 cp generic-host_nagios2.cfg ../openstack/generic-host-templates.cfg
 mv generic-host_nagios2.cfg ORIG/generic-host_nagios2.cfg.ORIG
 
-cp contacts_nagios2.cfg contacts.cfg
+cp contacts_nagios2.cfg ../openstack/conf.d/contacts.cfg
 mv contacts_nagios2.cfg ORIG/contacts.cfg.ORIG
 
 cp extinfo_nagios2.cfg extinfo.cfg

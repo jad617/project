@@ -1,0 +1,12 @@
+#! /bin/bash
+
+
+
+var1="a b c"
+var2="a,b,c"
+
+IFS=','
+
+echo $var1
+
+echo $var2
