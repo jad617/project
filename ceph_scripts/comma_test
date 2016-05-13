@@ -1,6 +1,6 @@
 #! /bin/bash
 
-
+echo "im watching you"
 
 var1="a b c"
 var2="a,b,c"
@@ -10,3 +10,5 @@ IFS=','
 echo $var1
 
 echo $var2
+
+echo "yea you"
