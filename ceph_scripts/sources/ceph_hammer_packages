@@ -19,4 +19,10 @@ apt-get --force-yes -y -f install
 #dpkg -i ceph_0.94.5-1trusty_amd64.deb
 #apt-get install -y libaio1 libsnappy1 libcurl3 curl libgoogle-perftools4 libgoogle-perftools4 google-perftools libleveldb1
 #apt-get --force-yes -y -f install
+
+#To upgrade to JEWEL
+wget -q -O- 'https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc' | sudo apt-key add -
+sed -i "s/hammer/jewel/g" /etc/apt/sources.list
+
+
 echo -e "\nPackage Installation is done\nProceed to next step:\n"

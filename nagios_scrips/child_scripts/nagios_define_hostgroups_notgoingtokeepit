@@ -1,0 +1,70 @@
+#! /bin/bash
+cd "$(dirname "$0")"
+
+
+f_controller_groups()
+{
+controller_table=( $(grep "controller" ../sources/variables) )
+c=0
+while [ "$c" -lt "${#controller_table[@]}" ]
+do
+	
+	echo "#Create Controller group
+	define hostgroup {
+        	hostgroup_name  controllers
+                	alias           Controller Hosts
+                	members         ${controller_table[@]}
+        }
+	
+	" >> /etc/nagios3/openstack/controllers/hostgroups.cfg
+
+# ADD code to auto add comma in the previous echo!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        (( c++ ))
+	
+
+
+done
+
+}
+
+f_compute_groups()
+
+{
+
+compute_table=( $(grep "compute" ../sources/variables) )
+d=0
+while [ "$d" -lt "${#compute_table[@]}" ]
+do
+
+        echo "#Create Compute group
+        define hostgroup {
+                hostgroup_name  computes
+                        alias           Compute Hosts
+                        members         ${compute_table[@]}
+        }
+
+
+	" >> /etc/nagios3/openstack/controllers/hostgroups.cfg
+
+# ADD code to auto add comma in the previous echo!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+        (( d++ ))
+
+
+
+
+done
+}
+
+
+#Create the Default all group for the hostgroups.cfg file
+
+echo "# A simple wildcard hostgroup
+define hostgroup {
+	hostgroup_name  all
+                alias           All Servers
+                members         *
+        }
+" > /etc/nagios3/openstack/hostgroups.cfg
