@@ -14,7 +14,7 @@ source ../../0.General/ceph_openstack_functions
 mongo --host controller --eval '
   db = db.getSiblingDB("ceilometer");
   db.addUser({user: "ceilometer",
-  pwd: "MONGO_DB",
+  pwd: "11b87791d7b804e485f2",
   roles: [ "readWrite", "dbAdmin" ]})'
 
 #----------------------------------------------Ceilometer Configuration--------------------------------------------

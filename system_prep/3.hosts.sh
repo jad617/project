@@ -26,6 +26,10 @@ echo -e "\n#Ips added by the script\n" >> $host_file
 
 reponse=true 
 
+#we create automatically the SSH KEY
+mkdir ~/.ssh/
+ssh-keygen -f ~/.ssh/openstack -t rsa -N ''
+
 while [ "$reponse" = true ]
 do
 	echo -e "\nHost File Configuration in /etc/hosts\n"
@@ -36,6 +40,11 @@ do
 #	echo "$srv_ip	$srv_hostname"."$srv_domain	$srv_hostname" >> $host_file
 		
 	echo "$srv_ip	$srv_hostname" >> $host_file
+	
+	#We add the Host in ~/.ssh/config in order to connect automatically
+	echo   "Host $srv_hostname
+	Port 22
+       	IdentityFile  ~/.ssh/openstack" >> ~/.ssh/config
 
 #	echo -e "\n" 
 
