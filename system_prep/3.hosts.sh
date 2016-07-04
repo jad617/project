@@ -41,6 +41,21 @@ do
 		
 	echo "$srv_ip	$srv_hostname" >> $host_file
 	
+	
+	#SSH-COPY-ID
+	if [[ $srv_hostname  =~ controller.* ]]
+	then
+        	ssh-copy-id -i ~/.ssh/openstack controller@$srv_ip
+	elif [[ $srv_hostname  =~ compute.* ]]
+	then
+        	ssh-copy-id -i ~/.ssh/openstack compute@$srv_ip
+
+	else
+        	read -p "What is the username for this server?: " username
+		ssh-copy-id -i ~/.ssh/openstack $username@$srv_ip
+	fi
+
+
 	#We add the Host in ~/.ssh/config in order to connect automatically
 	echo   "Host $srv_hostname
 	Port 22
