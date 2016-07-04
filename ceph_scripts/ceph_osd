@@ -7,6 +7,12 @@ cd "$(dirname "$0")"
 #We source the export file to include the $cluster_name varialbe in our script
 source export_file
 
+#To upgrade to JEWEL
+wget -q -O- 'https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc' | sudo apt-key add -
+sed -i "s/hammer/jewel/g" /etc/apt/sources.list
+apt-get update && apt-get upgrade ceph -y
+
+
 ############These are only the step by step with there output---script will have to be adapted after
 
 #We find and create a table with the available disks (/dev/sda is already used for the OS)

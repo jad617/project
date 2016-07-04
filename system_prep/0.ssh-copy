@@ -1,9 +1,0 @@
-#! /bin/bash
-
-cd "$(dirname "$0")"
-
-ssh-keygen -f /root/.ssh/openstack -t rsa -N ''
-
-echo "
-
-"
