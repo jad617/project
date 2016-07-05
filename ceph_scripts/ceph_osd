@@ -18,7 +18,7 @@ apt-get update && apt-get upgrade ceph -y
 #We find and create a table with the available disks (/dev/sda is already used for the OS)
 
 echo $cluster_name
-disk_partition=( $(fdisk -l 2>/dev/null | grep "/dev/sd[b-z][^1-9]" | cut -d" " -f2 | cut -d":" -f1 | sort) )
+disk_partition=( $(fdisk -l 2>/dev/null | grep "/dev/[sv]d[b-z][^1-9]" | cut -d" " -f2 | cut -d":" -f1 | sort) )
 #/dev/sdb
 #/dev/sdc
 echo  ${#disk_partition[@]} 
@@ -51,7 +51,7 @@ do
 	#Create the OSD directory
 	mkdir /var/lib/ceph/osd/$cluster_name-$osd_num
 
-	first_partition=( $(fdisk -l 2>/dev/null | cut -d" " -f1 | grep "^/dev/sd[b-z][1]" | sort) )
+	first_partition=( $(fdisk -l 2>/dev/null | cut -d" " -f1 | grep "^/dev/[sv]d[b-z][1]" | sort) )
 	#This will output only the partitions created earlier
 	#/dev/sdb1
 	#/dev/sdc1

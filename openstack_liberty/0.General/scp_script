@@ -3,7 +3,7 @@
 cd "$(dirname "$0")"
 
 project_name="project"
-
+folder_path="/root/project"
 ###SCP transfer to other nodes
 read -p "Would you like to send those configs to another server?: [y/n] " question1
 if [ "$question1" != "y" ]
@@ -26,7 +26,7 @@ do
                 node_port=22
         fi
 
-        read -p "Give the full path of your source folder: " folder_path
+        #read -p "Give the full path of your source folder: " folder_path
         #read -p "Give the full path of the destination folder: " folder_dest
 
         scp -r -P $node_port $folder_path $node_user@$node_ip:/tmp
