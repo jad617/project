@@ -95,6 +95,11 @@ ovs-vsctl add-port br-vlan eth1:vlan	#For Vlan access
 #We will disable the sleep options in /etc/init/failsafe.conf because, with our network configuration, it will give a false positive and hang for more than 2 minutes
 sed -i "s/sleep/#sleep/g" /etc/init/failsafe.conf
 
+#Disable SSH timeout
+echo "ClientAliveInterval 30
+ClientAliveCountMax 99999
+" >> /etc/ssh/sshd_config
+
 #We now restart the Open vSwitch service and reboot
 service openvswitch-switch restart
 reboot
