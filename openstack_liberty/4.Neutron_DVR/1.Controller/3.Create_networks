@@ -10,9 +10,9 @@ neutron net-create ext-net --router:external \
 
 
 #Create a subnet on the external network:
-neutron subnet-create ext-net 192.168.197.0/24 --allocation-pool \
-  start=192.168.197.180,end=192.168.197.200 --disable-dhcp \
-  --gateway 192.168.197.2 --name ext-subnet
+neutron subnet-create ext-net 192.168.122.0/24 --allocation-pool \
+  start=192.168.197.200,end=192.168.197.220 --disable-dhcp \
+  --gateway 192.168.197.1 --name ext-subnet
 
 #Obtain the ID of a regular project. For example, using the demo project
 demo_tenant_id=$(openstack project show demo | grep "id" | egrep -v "domain|parent" | awk '{print $4}')
