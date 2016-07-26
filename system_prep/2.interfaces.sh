@@ -104,3 +104,37 @@ ClientAliveCountMax 99999
 service openvswitch-switch restart
 reboot
 
+
+#####IMPORTANT FOR LATER-------------------------
+#2. Change the GRUB config file to disable the name change:
+#vi /etc/default/grub
+
+#Find the GRUB_CMDLINE_LINUX_DEFAULT entry and add the following 2 items between the quotes in this file. 
+#"net.ifnames=1 biosdevname=0"
+
+#This is exactly how my line looked, including the quotes:
+#GRUB_CMDLINE_LINUX_DEFAULT="net.ifnames=1 biosdevname=0"
+
+#3. Run update-grub to update your grub configuration, but do not reboot yet. 
+#update-grub
+
+#4. Edit your /etc/network/interfaces and change the em1 entries to eth0 and em2 to eth1 and so on:
+#vi /etc/network/interfaces
+#Before edit:
+
+# The primary network interface
+#auto em1
+#iface em1 inet dhcp
+
+#After Edit:
+
+# The primary network interface
+#auto eth0
+#iface eth0 inet dhcp
+
+
+#5. Change any other software that is interface specific from em1 to eth0 before you reboot. 
+#6. Reboot. 
+
+
+
