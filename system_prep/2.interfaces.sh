@@ -32,6 +32,7 @@ echo "
 # The loopback network interface
 auto lo
 iface lo inet loopback
+	dns-nameservers 69.9.191.4 69.9.160.191
 
 #External Interface
 auto eth0
